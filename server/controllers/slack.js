@@ -13,14 +13,14 @@ var Request = require('../models/requests.js');
 
 
 router.get('/',function(req, res){
-    res.send("addRequests");
+    res.send("Slack command end point")
 });
 
 router.post('/', urlencodedParser, (req, res) =>{
     res.status(200).end() // best practice to respond with empty 200 status code
     var reqBody = req.body
     console.log(reqBody);
-  
+    
     var text = reqBody.text;
   
     var command = "";
@@ -33,12 +33,12 @@ router.post('/', urlencodedParser, (req, res) =>{
       var trimmed = text.trim();
 
       if (trimmed == "help") {
-        command = "help";
+        command = "help"
       } else if (trimmed == "list") {
-        command = "list";
+        command = "list"
       } else {
-        command = "request";
         var blocks = trimmed.split(" ");
+        command = "request";
       }
       
     }
@@ -46,7 +46,7 @@ router.post('/', urlencodedParser, (req, res) =>{
     if (blocks) {
       console.log("blocks: ", blocks)
     }  
-    
+  
     if (reqBody.token != process.env.ATOKEN){
       
         res.status(403).end("Access forbidden")
@@ -77,9 +77,6 @@ router.post('/', urlencodedParser, (req, res) =>{
         for (var j=0; j< tagged.length;j++) {
             list += "@" + tagged[j] + " ";
         }
-      
-        
-      
         const dial = {
         "callback_id": "requestDialog",
         "title": "Request a New Approval",
