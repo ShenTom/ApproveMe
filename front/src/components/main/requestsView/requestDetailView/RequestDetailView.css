@@ -1,0 +1,77 @@
+.request-info-container{
+  flex-grow: 1.7;
+  display: flex;
+}
+
+.request-content{
+  margin-right: 30px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px 0 rgba(102,102,102,0.6);
+  flex-grow: 1;
+}
+
+.request-content .header{
+  background-color: white;
+  width: calc(100% - 32px);
+  height: 70px;
+  padding-right: 16px;
+  padding-left: 16px;
+  padding-top: 16px;
+  margin-top: 16px;
+  display: flex;
+  text-align: center;
+}
+
+.editable{
+  cursor: text;
+  height: 28px;
+  width: auto;
+  font-size: 24px;
+  font-weight: 700;
+
+}
+
+.options-bar{
+  width:100%;
+  height:50px;
+  background-color: white;
+}
+
+.request-content .header .complete-icon{
+  float:right;
+  width: 28px;
+  height: 28px;
+  font-size: 28px;
+}
+
+.complete-icon:hover{
+  color: rgb(63, 179, 79);
+}
+
+.main-field{
+  width: calc(100% - 32px);
+  height:500px;
+  background-color: #f8f8f9;
+  padding: 0.5em;
+}
+
+.input-container{
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  margin-left: 1em;
+  margin-right: 1em;
+  height: 100px;
+  width: calc(100% - 32px);
+  color: red;
+}
+
+.time-selector{
+  margin-left: 12px;
+  margin-right: 12px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  height: 20px;
+  width: calc(100% - 24px);
+}

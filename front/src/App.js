@@ -1,21 +1,32 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import './App.css';
+import LoginPage from './components/loginPage/LoginPage';
+import LoggedInView from './components/LoggedInView'
+
 
 class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      main_view: "DASHBOARD"
+    }
+    this.update_main_view = this.update_main_view.bind(this)
+  }
+
+  update_main_view(new_view){
+    this.setState({
+      main_view: new_view
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Switch>
+        <Route exact path='/login' component={LoginPage}/>
+        <Route exact path='/' component={LoggedInView}/>
+      </Switch>
     );
   }
 }
-
 export default App;

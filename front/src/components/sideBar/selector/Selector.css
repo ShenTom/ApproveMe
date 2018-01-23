@@ -1,0 +1,103 @@
+.selector{
+  height: 20px;
+  width: calc(100% - 60px);
+  background: transparent;
+  float: left;
+  padding-left: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+ .private{
+  margin-right: 0.25em;
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  font-size: 15px;
+  color: rgba(255,255,255,0.54);
+}
+
+.selected{
+  height: 20px;
+  width: calc(100% - 60px);
+  background: transparent;
+  float: left;
+  padding-left: 16px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-right: 44px;
+  cursor: pointer;
+  background-color: rgb(92, 86, 149);
+}
+
+.selected .name {
+  margin-right: 0.25em;
+  color: rgba(255,255,255,0.54);
+  display: inline-block;
+  font-weight: 500;
+  font-style: normal;
+  font-family: proxima_nova_soft;
+  font-size: 13px;
+  margin: 0;
+  user-select: none;
+  max-width: 100px;
+  overflow: hidden;
+  max-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+.selected .hash{
+  margin-right: 0.25em;
+  opacity: 0.5;
+  width: 15px;
+  text-align: center;
+  display: inline-block;
+  height: 20px;
+  color: rgba(255,255,255,0.87);
+}
+
+
+
+.selector .name {
+  margin-right: 0.25em;
+  color: rgba(255,255,255,0.54);
+  display: inline-block;
+  font-weight: 500;
+  font-style: normal;
+  font-family: proxima_nova_soft;
+  font-size: 13px;
+  margin: 0;
+  user-select: none;
+  max-width: 100px;
+  overflow: hidden;
+  max-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
+.selector .hash{
+  margin-right: 0.25em;
+  opacity: 0.5;
+  width: 15px;
+  text-align: center;
+  display: inline-block;
+  height: 20px;
+  color: rgba(255,255,255,0.87);
+}
+
+.selector:hover {
+  background-color: rgb(20, 18, 36);
+  cursor: pointer;
+}
+
+.selector:hover p {
+    color: white;
+}
+/*background-color: rgb(92, 86, 149);*/
