@@ -1,0 +1,17 @@
+.comment-box{
+  flex-grow: 1;
+  margin: 2px;
+  padding: 8px;
+  resize: none;
+  border-radius: 6px;
+  font-size: 16.8px;
+}
+
+.comment-box:focus {
+  outline:0;
+}
+
+.request-info-footer .comment-input-container{
+  flex-grow: 1;
+  display: flex;
+}

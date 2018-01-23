@@ -28,9 +28,8 @@ class LoginPage extends Component{
       const key = resJson.access_token
       this.props.history.push({
         pathname: '/',
-        state: { token: key, status: "loggedIn", user_id: resJson.user_id}
-      }
-      );
+        state: { token: key, isLoggedIn: true, user_id: resJson.user_id}
+      });
     }
 
   }

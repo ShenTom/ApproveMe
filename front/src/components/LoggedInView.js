@@ -53,22 +53,30 @@ class App extends Component {
   }
 
   async componentDidMount(){
-    if(!this.state.loadedData){
-      let data = {}
-      this.props.fetchAllData();
-      const channels = await this.getChannels();
-      data["channels"] = channels;
-      const groups = await this.getPrivateChannels();
-      data["groups"] = groups
-      const requests = await this.getRequests();
-      data["requests"] = requests.requested.concat(requests.tagged)
-      data["requested"] = requests.requested
-      data["tagged"] = requests.tagged
-      this.props.fetchAllDataSuccess(data);
-      this.setState({
-        loadedData: true
-      })
+    if(this.props.location.state){
+      if(!this.state.loadedData){
+        let data = {}
+        this.props.fetchAllData();
+        const channels = await this.getChannels();
+        data["channels"] = channels;
+        const groups = await this.getPrivateChannels();
+        data["groups"] = groups
+        const requests = await this.getRequests();
+        data["requests"] = requests.requested.concat(requests.tagged)
+        data["requested"] = requests.requested
+        data["tagged"] = requests.tagged
+        this.props.fetchAllDataSuccess(data);
+        this.setState({
+          loadedData: true
+        })
+      }
+    } else {
+      this.props.history.push({
+        pathname: '/login'
+      });
     }
+
+
   }
 
   render() {
