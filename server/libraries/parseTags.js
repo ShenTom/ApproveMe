@@ -1,32 +1,20 @@
-var slack = require('slack');
+ar slack = require('slack');
 
-const parseTags = async function (string) {
+const parseTags = function (string) {
   
-    
-    var users = [];
-    while (string.indexOf("@") != string.lastIndexOf("@")) {
-        var start = string.indexOf("@") + 1;
-        var end = string.indexOf("@", start) -1;
-        users.push(string.slice(start, end));
-        string = string.slice(end+1)
-    }
-    users.push(string.slice(1));
-    
-    console.log("Users: ", users);
+    //need update... user string is now with userID
+  
+    var users = string.split(" ");
   
     var result = [];
   
-    var data = await slack.users.list({token: process.env.OTOKEN, limit: 250})
-      
-    for (var i=0; i<data.members.length; i++) {
-        if (users.indexOf(data.members[i].name) != -1) {
-            result.push(data.members[i].id);
-            users.splice(users.indexOf(data.members[i].name), 1);
-        }
-        if (users.length == 0) {
-            break;    
-        }
+    for (var i=0; i<users.length; i++) {
+        var end = users[i].indexOf("|");
+        var id = users[i].slice(2, end);
+        result.push(id);
     }
+    
+    console.log("Users: ", users);
     console.log("User IDs: ", result);
 
     return result;

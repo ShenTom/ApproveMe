@@ -1,5 +1,10 @@
 var sendMessage = require("./sendMessage");
 var slack = require('slack');
+const MongoClient = require('mongodb').MongoClient;
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://edward&tom:cactes@ds255797.mlab.com:55797/approveme');
+
+var Request = require('../models/requests.js');
 
 
 const commands = function (reqBody, command) {
@@ -38,6 +43,7 @@ const commands = function (reqBody, command) {
                 list.tagged.push(result[i]);
             }
         }
+        console.log(list);
 
         var msg = {
             "response_type": "ephemeral",
@@ -58,9 +64,14 @@ const commands = function (reqBody, command) {
   } else if (command == "request") {
       var blocks = reqBody.text.trim().split(" ");
     
+      console.log(blocks)
     
+      var list = "";
+      for (var j=0; j< blocks.length;j++) {
+          list += blocks[j] + " ";
+      }
     
-      //send error that the tagged ppl are not in the channel
+      //send error that the tagged ppl are not in the channel (wip..)
   
       //open dialog
     
@@ -115,6 +126,32 @@ const commands = function (reqBody, command) {
   
   
 }
+
+
+
+        //get the tagged users in a list
+//         var tagged = [];
+      
+//         var users = reqBody.text;
+//         if (users.indexOf("@") == users.lastIndexOf("@")) {
+//             tagged.push(users.slice(1))
+//         } else {
+//             while (users.indexOf("@") != users.lastIndexOf("@")) {
+//                 var start = users.indexOf("@") + 1
+//                 var end = users.indexOf("@", start) -1
+//                 tagged.push(users.slice(start, end))
+//                 users = users.slice(end+1)
+//             }
+//           tagged.push(users.slice(1))
+//         }
+      
+//         console.log("Tagged: ", tagged);
+
+      
+                
+
+
+
 
 
 module.exports = commands;
