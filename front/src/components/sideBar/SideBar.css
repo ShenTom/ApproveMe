@@ -1,0 +1,25 @@
+.sideBar{
+  width: 224px;
+  height: 100%;
+  left: 0px;
+  background-color: rgb(52, 53, 57);
+  display:inline-block;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+}
+
+.header{
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 16px;
+  padding-bottom: 8px;
+}
+
+.org-name{
+  font-family: 'proxima_nova_soft', 'Proxima Nova Soft', 'Proxima Nova', Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  user-select: none;
+}

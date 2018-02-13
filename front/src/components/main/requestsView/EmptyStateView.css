@@ -1,0 +1,30 @@
+.emptystate-container{
+  width: 500px;
+  height: 300px;
+  padding-top: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 400px;
+  user-select: none;
+}
+
+.emptystate-container .header{
+  margin-top: 30px;
+  font-size: 24px;
+  font-weight: 500;
+  color: rgb(102, 102, 102);
+}
+
+.emptystate-container img{
+  width: 115px;
+  height: 140px;
+}
+
+.bottom-text{
+  margin-top: 16px;
+  margin-bottom: 32px;
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(102, 102, 102);
+}
