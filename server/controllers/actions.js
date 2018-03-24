@@ -8,6 +8,7 @@ const MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var sendMessage = require('../libraries/sendMessage');
 var parseTags = require('../libraries/parseTags');
+var openRoom = require('../libraries/openRoom');
 mongoose.connect('mongodb://edward&tom:cactes@ds255797.mlab.com:55797/approveme');
 
 var Request = require('../models/requests.js');
@@ -24,6 +25,7 @@ router.post('/', urlencodedParser, (req, res) =>{
         res.sendStatus(500);
     } else {
         if (payload.callback_id === 'requestDialog') {
+          //catch callback_id === "accept" or "decline"
     
             console.log("Payload: ",payload);
           
@@ -48,49 +50,57 @@ router.post('/', urlencodedParser, (req, res) =>{
                     res.status(200).end()
                   
                     var names = payload.submission.tagged;
-                    parseTags(names).then( data => {
-                        var obj = {};
-                        for (var i=0; i<data.length; i++) {
-                            obj[data[i]] = "pending";
+                    var data = parseTags(names)
+                    var obj = {};
+                    for (var i=0; i<data.length; i++) {
+                        obj[data[i]] = "pending";
+                    }
+
+                    console.log("people: ", obj);
+
+
+                    if (payload.submission.comments) {
+                        var comments = payload.submission.comments
+                        var object = {};
+                        object[payload.user.id] = comments
+                        var time = Math.floor(Date.now() / 1000)
+                        time = time.toString();
+                        var temp = {}
+                        temp[time] = object;
+                    }
+
+                    console.log("object: ", object)
+                    console.log("time: ", temp)
+
+                    var newData = {
+                        "requester": payload.user.id,
+                        "event": payload.submission.name,
+                        "tagged": obj,
+                        "date": payload.submission.date,
+                        "comments": payload.submission.comments? [temp]:[],
+                        "timestamp": Math.floor(Date.now() / 1000),
+                        "urgency": payload.submission.urgency
+                    }
+
+                    console.log("result: ", newData);
+
+                    var newRequest = new Request(newData);
+                    newRequest.save((err, newRequest) => {
+                        if (err) {
+                          console.log(err);
+                        }
+                        console.log("Add to db! -> ", newRequest);
+
+                        //now send the notification to tagged users
+                        for (var j=0; j<data.length; j++) {
+                            openRoom(data[j]).then(roomID => {
+                              
+                              //design the message (wip...)
+                              //make the button for accept or decline unique ID
+                              slack.chat.postMessage({token: process.env.BTOKEN, channel: roomID, text: "new request!"})
+                            }) 
                         }
 
-                        console.log("people: ", obj);
-                      
-                      
-                        if (payload.submission.comments) {
-                            var comments = payload.submission.comments
-                            var object = {};
-                            object[payload.user.id] = comments
-                            var time = Math.floor(Date.now() / 1000)
-                            time = time.toString();
-                            var temp = {}
-                            temp[time] = object;
-                        }
-                      
-                        console.log("object: ", object)
-                        console.log("time: ", temp)
-
-                        var newData = {
-                            "requester": payload.user.id,
-                            "event": payload.submission.name,
-                            "tagged": obj,
-                            "date": payload.submission.date,
-                            "comments": payload.submission.comments? [temp]:[],
-                            "timestamp": Math.floor(Date.now() / 1000),
-                            "urgency": payload.submission.urgency
-                        }
-
-                        console.log("result: ", newData);
-
-                        var newRequest = new Request(newData);
-                        newRequest.save((err, newRequest) => {
-                            if (err) {
-                              console.log(err);
-                            }
-                            console.log("Add to db! -> ", newRequest);
-                          
-                            //now send the notification to tagged users
-                        })
                     })
                 }
             });
