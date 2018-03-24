@@ -18,16 +18,17 @@ class Channels extends Component{
   }
 
   render(){
+
     return (
       <div className="channel">
         <Selector title="CHANNELS" updateView = {this.props.updateView} inFocus={this.props.view === "CHANNELS"}/>
         {this.state.channels.concat(this.props.groups).map((channel) => {
           const inFocus = this.props.view === channel.name;
-        
           return (
             <Selector
               key = {channel.name}
               title={channel.name}
+              id={channel.id}
               private={channel.is_group}
               updateView = {this.props.updateView}
               inFocus ={inFocus}/>

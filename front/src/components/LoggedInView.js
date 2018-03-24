@@ -17,9 +17,10 @@ class App extends Component {
     this.getRequests = this.getRequests.bind(this)
   }
 
-  update_main_view(new_view){
+  update_main_view(new_view, id){
     this.setState({
       main_view: new_view,
+      channel_id: id,
       loadedData: false
     });
   }
@@ -64,7 +65,8 @@ class App extends Component {
         const requests = await this.getRequests();
         data["requests"] = requests.requested.concat(requests.tagged)
         data["requested"] = requests.requested
-        data["tagged"] = requests.tagged
+        data["tagged"] = requests.tagged;
+        data["user_id"] = this.props.location.state.user_id
         this.props.fetchAllDataSuccess(data);
         this.setState({
           loadedData: true
@@ -83,7 +85,7 @@ class App extends Component {
     return (
       <div className="container">
         <SideBar updateView={this.update_main_view} channels={this.props.loadedData.channels} view={this.state.main_view} groups={this.props.loadedData.groups}/>
-        <Main updateView={this.update_main_view} view={this.state.main_view}/>
+        <Main updateView={this.update_main_view} view={this.state.main_view} channel_id={this.state.channel_id}/>
       </div>
     );
   }

@@ -42,7 +42,7 @@ class ChannelView extends Component{
               <div key={group.name} className="channel" onClick={()=>{this.props.updateView(group.name)}}>
                 <div className="left">
                   <span className="name">
-                    <i class="material-icons channel-icon private">lock</i>
+                    <i className="material-icons channel-icon private">lock</i>
                     {group.name}
                   </span>
                 </div>

@@ -25,7 +25,7 @@ class Main extends Component {
       default:
         return(
           <div className="main">
-            <RequestsView name={this.props.view} requests={this.props.loadedData.requests}/>
+            <RequestsView name={this.props.view} requests={this.props.loadedData.requests} channel_id={this.props.channel_id}/>
           </div>
         )
     }

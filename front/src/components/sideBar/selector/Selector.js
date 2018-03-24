@@ -23,7 +23,7 @@ const Selector = (props) => {
 
   return (
     <div className={className} onClick={()=>{
-        props.updateView(props.title)
+        props.updateView(props.title, props.id)
       }}>
       {icon}
       <p className="name" >{props.title}</p>

@@ -4,7 +4,8 @@ import { FETCH_ALL_SUCCESS, FETCH_ALL_REQUEST, FETCH_ALL_ERROR } from "./constan
 const initialState = {
   data: {
     channels:[],
-    groups: []
+    groups: [],
+    user_id: 0
   }
 };
 

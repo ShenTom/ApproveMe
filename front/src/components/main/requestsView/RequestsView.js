@@ -65,7 +65,9 @@ class RequestsView extends Component {
                 <div className="task-list">
                   {
                     this.state.requests.map((request)=>{
-                      return (<RequestBar handlePress={this.handleRequestDetails} request={request} inFocus={this.state.requestFocused && this.state.inFocusRequest.event === request.event}/>)
+                      if(request.channel == this.props.channel_id){
+                        return (<RequestBar key={request.event}handlePress={this.handleRequestDetails} request={request} inFocus={this.state.requestFocused && this.state.inFocusRequest.event === request.event}/>)
+                      }
                     })
                   }
 
@@ -75,7 +77,9 @@ class RequestsView extends Component {
     if (this.state.requestFocused){
       requestInfoView = <RequestDetailView request={this.state.inFocusRequest}/>
     }
+
     return (
+
       <div className="requestsView">
         <div className="container" onClick={this.handleBackgroundPress}>
           <div className="mainHeader">
