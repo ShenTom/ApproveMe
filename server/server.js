@@ -20,9 +20,14 @@ app.get('/', function (req, res) {
 });
 
 // Route for get/Post requests for "rooms".
-app.use('/actions', require('./controllers/actions').router);
 app.use('/addRequests', require('./controllers/addRequests').router);
-app.use('/getRequests', require('./controllers/GetRequests').router);
+app.use('/getRequests', require('./controllers/getRequests').router);
+app.use('/editRequests', require('./controllers/editRequests').router);
+app.use('/sendNotifications', require('./controllers/sendNotifications').router)
+app.use('/approve', require('./controllers/approve').router);
+app.use('/decline', require('./controllers/decline').router);
+app.use('/actions', require('./controllers/actions').router);
+app.use('/slack', require('./controllers/slack').router)
 
 
 app.listen(3000, () => {

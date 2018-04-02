@@ -36,6 +36,7 @@ const commands = function (reqBody, command) {
         var target = reqBody.user_id;
       
         for (var i=0; i< result.length; i++) {
+            console.log(result[i]);
             if (result[i].requester == target) {
                 list.requested.push(result[i]);
             }
@@ -56,6 +57,9 @@ const commands = function (reqBody, command) {
         }
         //need to figure out how to represent each request...
         //maybe just top 3 and link htem to the interface?
+        
+        //add notify api!!
+        //open request: notify button, closed request: result
         
         sendMessage(reqBody.response_url, msg);
       
@@ -89,7 +93,7 @@ const commands = function (reqBody, command) {
             "type": "text",
             "label": "Date",
             "name": "date",
-            "placeholder": "ex. Mar 18, 2018"
+            "placeholder": "month-day-year (ex. 03-18-2018)"
           },
           {
             "label": "Tagged",
@@ -103,16 +107,15 @@ const commands = function (reqBody, command) {
             type: 'select',
             name: 'urgency',
             options: [
-              { label: 'High', value: 'High' },
-              { label: 'Medium', value: 'Medium' },
-              { label: 'Low', value: 'Low' },
+              { label: 'High', value: 3 },
+              { label: 'Medium', value: 2 },
+              { label: 'Low', value: 1 },
             ],
           },
           {
             "type": "textarea",
-            "label": "Comments",
-            "name": "comments",
-            "optional": true
+            "label": "Description",
+            "name": "description"
           }
         ]
       }
@@ -120,38 +123,10 @@ const commands = function (reqBody, command) {
       slack.dialog.open({token: process.env.OTOKEN ,dialog: dial, trigger_id: reqBody.trigger_id})
         .then( data => {console.log(data)})
         .catch(error => {console.log(error)})
-
     
   }
   
   
 }
-
-
-
-        //get the tagged users in a list
-//         var tagged = [];
-      
-//         var users = reqBody.text;
-//         if (users.indexOf("@") == users.lastIndexOf("@")) {
-//             tagged.push(users.slice(1))
-//         } else {
-//             while (users.indexOf("@") != users.lastIndexOf("@")) {
-//                 var start = users.indexOf("@") + 1
-//                 var end = users.indexOf("@", start) -1
-//                 tagged.push(users.slice(start, end))
-//                 users = users.slice(end+1)
-//             }
-//           tagged.push(users.slice(1))
-//         }
-      
-//         console.log("Tagged: ", tagged);
-
-      
-                
-
-
-
-
 
 module.exports = commands;

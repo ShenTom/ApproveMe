@@ -5,13 +5,13 @@ var Schema = mongoose.Schema;
 
 //requester, e_name, tagged (people: response), comments (timestamp: msg, commenter), timestamp of the event
 var RequestSchema = new Schema({
-    requester: String,
     event: String,
-    tagged: [{}],
+    requester: String,
+    tagged: {},
     date: String,
-    comments: [{}],
+    channel: String,
+    description: String,
     timestamp: String,
     urgency: String
 });
-
 module.exports = mongoose.model('Request', RequestSchema);

@@ -9,8 +9,9 @@ var mongoose = require('mongoose');
 var sendMessage = require('../libraries/sendMessage');
 mongoose.connect('mongodb://edward&tom:cactes@ds255797.mlab.com:55797/approveme');
 
-var respond = require("../libraries/respond.js");
+var respond = require('../libraries/respond.js');
 var Request = require('../models/requests.js');
+
 
 router.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -19,14 +20,14 @@ router.use(function(req, res, next) {
 });
 
 router.get('/',function(req, res){
-    res.send("Accept requests by sending event name and user_id!")
+    res.send("Decline requests by sending event name and user_id!")
 });
 
 router.post('/', urlencodedParser, (req, res) =>{
     var target = req.query
     console.log("target: ", target)
     
-    respond(target.event, target.user_id, "approve")
+    respond(target.event, target.user_id, "decline")
       .then(data => {
         res.set("Accept", "Application/Json");
         var resp = {"successful": true, "message": data}
