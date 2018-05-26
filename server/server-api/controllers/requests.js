@@ -6,8 +6,8 @@ const MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
 var sendMessage = require('../libraries/sendMessage');
 var parseTags = require('../libraries/parseTags');
-var notifyUser = require('../libraries/notifyUser');
-mongoose.connect('mongodb://edward&tom:cactes@ds255797.mlab.com:55797/approveme');
+var nextSeqVal = require('../libraries/nextSeqVal');
+mongoose.connect(process.env.DB_LOGIN);
 
 var Request = require('../models/requests.js');
 
@@ -82,7 +82,59 @@ router.get('/:user_id', (req, res) =>{
 });
 
 router.post('/', urlencodedParser, (req, res) =>{
+  
+  console.log("post req.body: ", req.body);
+  
+  var body = req.body;
 
+  var requirement = ["tagged", "event", "requester", "date", "description", "urgency"];
+
+  var passed = true;
+
+  for (var i=0; i<requirement.length; i++) {
+    if (!(requirement[i] in body)) {
+      passed = false;
+      break;
+    }
+  }
+
+  if (!passed) {
+    
+    res.status(400).send({successful: false, result: "make sure all the correct fields are included in the json."})
+
+  } else {
+    
+    var newData = {
+      "_id": nextSeqVal("requestid"),
+      "requester": body.requester,
+      "event": body.event,
+      "tagged": body.tagged,
+      "date": body.date,
+      "description": body.description,
+      "timestamp": Math.floor(Date.now() / 1000),
+      "urgency": body.urgency
+    }
+
+    console.log("new data parsed from body: ", newData);
+      
+    var newRequest = new Request(newData);
+    newRequest.save((err, newRequest) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("Add to db! -> ", newRequest);
+
+      var resp = {successful: true, result: newData}
+
+      res.status(201).send(resp);
+
+      var users = Object.keys(body.tagged);
+      //send notifications to tagged users (wip...)
+      for (var j=0; j<users.length; j++) {
+          notifyUser(users[j], newData);
+      }
+    })
+  }
 });
 
 router.put('/:id', urlencodedParser, (req, res) => {
