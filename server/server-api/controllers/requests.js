@@ -137,13 +137,36 @@ router.post('/', urlencodedParser, (req, res) =>{
   }
 });
 
-router.put('/:id', urlencodedParser, (req, res) => {
+router.put('/:req_id', urlencodedParser, (req, res) => {
+  
+  console.log("put req.body: ", req.body);
+  
+  var body = req.body;
+
+  var requirement = ["tagged", "event", "requester", "date", "description", "urgency"];
+
+  var update = {};
+  
+  var query = {_id: req.params.req_id};
+
+  for (var i=0; i<requirement.length; i++) {
+    if (requirement[i] in body) {
+      update[requirement[i]] = body[requirement]
+    }
+  }
+  
+  Request.update(query, update, function (err, raw) {
+    if (err) console.log("update fail: ", err);
+  });
 
 });
 
-router.delete('/:id', urlencodedParser, (req, res) => {
-
+router.delete('/:req_id', urlencodedParser, (req, res) => {
+  
+  Request.remove({_id: req.params.req_id}, (err, res) => {
+    if (err) console.log("delete error:", err);
+  })
+  
 });
-
 
 module.exports.router = router;
