@@ -20,8 +20,6 @@ app.get('/', function (req, res) {
 
 });
 
-app.use('/addRequests', require('./controllers/addRequests').router);
-app.use('/editRequests', require('./controllers/editRequests').router);
 app.use('/sendNotifications', require('./controllers/sendNotifications').router);
 app.use('/approve', require('./controllers/approve').router);
 app.use('/decline', require('./controllers/decline').router);
