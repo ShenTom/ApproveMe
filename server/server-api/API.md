@@ -68,7 +68,7 @@ Sample Response JSON
    * Return all the events in the database.
 
 
-### `/requests/:user_id` [GET]
+### `/requests/user/:user_id` [GET]
 **GET Request**
 
 Sample Response JSON
@@ -136,9 +136,54 @@ Sample Response JSON
    * **2**, **1**, **0** stands for **approved**, **pending**, and **declined** respectively.
 
 
-### `/requests` [PUT]
+### `/requests/:req_id` [PUT]
 
-### `/requests` [DELETE]
+Sample Request JSON
+
+```javascript
+{
+	"event": "Testing Add feature",
+	"tagged": {
+	    "U79456HA5": 2,
+	    "U7A5FL7P1": 1
+	},
+	"date": "03-18-2018",
+	"description": "Testingggg",
+	"urgency": "2"
+}
+```
+
+
+Sample Response JSON
+
+```javascript
+{
+	"successful": true,
+	"result": {
+		"event": "Testing Add feature",
+		"tagged": {
+		    "U79456HA5": 2,
+		    "U7A5FL7P1": 1
+		},
+		"date": "03-18-2018",
+		"description": "Testingggg",
+		"urgency": "2"
+	}
+}
+```
+   * **Requester** and **channel** fields are not udpateable. 
+
+### `/requests/:req_id` [DELETE]
+
+Sample Response JSON
+
+```javascript
+{
+	"successful": true,
+	"result": "The request with this request id has been removed."
+}
+```
+   * Please use this endpoint carefully. Make sure to provide a confirmation message to the user before using this endpoint.
 
 ### `/approve` [POST]
 
