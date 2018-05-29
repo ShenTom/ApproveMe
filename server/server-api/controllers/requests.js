@@ -50,7 +50,7 @@ router.get('/', (req, res) =>{
     });
 });
 
-router.get('/:user_id', (req, res) =>{ 
+router.get('/users/:user_id', (req, res) =>{ 
   
     var list = {
         "requested": [],
@@ -167,6 +167,99 @@ router.delete('/:req_id', urlencodedParser, (req, res) => {
     if (err) console.log("delete error:", err);
   })
   
+});
+
+router.post('/:req_id/users/:user_id', urlencodedParser, (req, res) =>{
+
+  if (req.headers['access-key'] !== process.env.ACCESS_KEY) {
+    res.status(401).send({successful: false, result: "Wrong/no access key is given."});
+    
+  } else {
+    
+    console.log("action body: ", req.body);
+    
+    let actions = ['approve', 'decline', 'sendNotification'];
+    
+    let action = req.body.action;
+    
+    let target = req.params.user_id;
+    
+    let validAction = false;
+    
+    if (actions.indexOf(action) != -1) {
+      validAction = true;
+    }
+    
+    if (!validAction) {
+      
+      res.status(400).send({successful: false, result: "make sure the action is one of the following: approve, decline, & sendNotification."});
+    
+    } else {
+      
+      let query = {_id: req.params.req_id};
+      
+      Request.findOne(query, (err, result) => {
+        if (err) {
+          console.log("action error:", err);
+          console.log("action not executed!");
+          res.status(404).send({successful: false, result: 'Internal server error'});
+          
+        } else {
+          
+          let tagged = result.tagged;
+          
+          if (!(req.params.user_id in tagged)){
+            res.status(400).send({successful: false, result: "Invalid user_id is given."});
+          } else {
+            
+            if (action == "approve") {
+              if (tagged[target] == -1 || tagged[target] == 0) {
+                tagged[target] = 1;
+                Request.update(query, {'tagged': tagged}, (err, raw) => {
+                  if (err) {
+                    console.log("action approve error:", err);
+                    console.log("action approve not executed!");
+                    res.status(404).send({successful: false, result: 'Internal server error'});
+                  } else {
+                    result.tagged = tagged
+                    res.status(200).send({successful: true, result: result});
+                  }
+                });
+              } else {
+                res.status(400).send({successful: false, result: "This user has approved this request already."});
+              }
+            
+            } else if (action == "decline") {
+              if (tagged[target] == 1 || tagged[target] == 0) {
+                tagged[target] = -1;
+                Request.update(query, {'tagged': tagged}, (err, raw) => {
+                  if (err) {
+                    console.log("action decline error:", err);
+                    console.log("action decline not executed!");
+                    res.status(404).send({successful: false, result: 'Internal server error'});
+                  } else {
+                    result.tagged = tagged;
+                    res.status(200).send({successful: true, result: result});
+                  }
+                });
+              } else {
+                res.status(400).send({successful: false, result: "This user has declined this request already."});
+              }
+            
+            } else if (action == "sendNotification") {
+              if (notifyUser(target, result)) {
+                var resp = {"successful": true, "message": "Notified the user!"}
+                res.send(resp);
+              } else {
+                console.log("notify user failed.");
+                res.status(404).send({successful: false, result: 'Internal server error'});
+              }
+            }
+          }
+        }
+      });
+    }
+  }
 });
 
 module.exports.router = router;
