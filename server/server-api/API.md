@@ -187,9 +187,40 @@ Sample Response JSON
 ```
    * Please use this endpoint carefully. Make sure to provide a confirmation message to the user before using this endpoint.
 
-### `/approve` [POST]
+### `/requests/:req_id/users/:user_id` [POST]
 
-### `/decline` [POST]
+Sample Request JSON
 
-### `/notification` [POST]
+```javascript
+{
+	"action": "approve"
+}
+```
+
+
+Sample Response JSON
+
+```javascript
+{
+	"successful": true,
+	"result": {
+		"_id": 1,
+		"requester": "U79456HA5",
+		"event": "Testing Add feature",
+		"tagged": {
+		    "U79456HA5": 1,
+		    "U7A5FL7P1": 0
+		},
+		"date": "03-18-2018",
+		"description": "Testingggg",
+		"timestamp": 1525257024,
+		"urgency": "2"
+	}
+}
+```
+
+   * There are only three actions available for this endpoint: **approve**, **decline**, and **sendNotification**.
+   * When one of the **approve** or **decline** action is sent, the user's status for the given request with the request id will be updated accordingly.
+   * The **sendNotification** action is for the slack front end only. When that action is sent, the user will receive a new chat bot message about the given request with the request id.
+
   
