@@ -141,9 +141,12 @@ router.post('/', urlencodedParser, (req, res) =>{
 
             var users = Object.keys(body.tagged);
             for (var j=0; j<users.length; j++) {
-              if (!(notifyUser(users[j], newData))) {
-                console.log("notify user failed...");
-              }
+              notifyUser(users[j], newData)
+                .then(succ => {
+                  if (!succ) {
+                    console.log("Notifying user not succ:", users[j]);
+                  }
+                }).catch(err=> {console.log("Notifying user err: ", err)});
             }
           }
 
@@ -264,12 +267,14 @@ router.post('/:req_id/users/:user_id', urlencodedParser, (req, res) =>{
               }
             
             } else if (action == "sendNotification") {
-              if (notifyUser(target, result)) {
-                var resp = {"successful": true, "message": "Notified the user!"}
-                res.send(resp);
-              } else {
-                console.log("notify user failed.");
-                res.status(404).send({successful: false, result: 'Internal server error'});
+              notifyUser(target, result).then(succ => {
+                if (succ) {
+                  res.send({"successful": true, "message": "Notified the user!"});
+                } else {
+                  console.log("notify user failed.");
+                  res.status(404).send({successful: false, result: 'Internal server error'});
+                }
+              }).catch(err=> {console.log("Notifying user err: ", err)});
               }
             }
           }
