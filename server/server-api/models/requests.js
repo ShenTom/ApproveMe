@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 
 //requester, e_name, tagged (people: response), comments (timestamp: msg, commenter), timestamp of the event
 var RequestSchema = new Schema({
+    _id: Number,
     event: String,
     requester: String,
     tagged: {},

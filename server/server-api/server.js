@@ -20,9 +20,6 @@ app.get('/', function (req, res) {
 
 });
 
-app.use('/sendNotifications', require('./controllers/sendNotifications').router);
-app.use('/actions', require('./controllers/actions').router);
-app.use('/slack', require('./controllers/slack').router);
 app.use('/requests', require('./controllers/requests').router);
 
 // listen for requests :)

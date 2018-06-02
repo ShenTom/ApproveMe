@@ -4,7 +4,6 @@ var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 const MongoClient = require('mongodb').MongoClient;
 var mongoose = require('mongoose');
-var sendMessage = require('../libraries/sendMessage');
 var parseTags = require('../libraries/parseTags');
 var nextSeqVal = require('../libraries/nextSeqVal');
 mongoose.connect(process.env.DB_LOGIN);
@@ -83,57 +82,75 @@ router.get('/users/:user_id', (req, res) =>{
 
 router.post('/', urlencodedParser, (req, res) =>{
   
-  console.log("post req.body: ", req.body);
-  
-  var body = req.body;
-
-  var requirement = ["tagged", "event", "requester", "date", "description", "urgency"];
-
-  var passed = true;
-
-  for (var i=0; i<requirement.length; i++) {
-    if (!(requirement[i] in body)) {
-      passed = false;
-      break;
-    }
-  }
-
-  if (!passed) {
+  if (req.headers['access-key'] !== process.env.ACCESS_KEY) {
+    res.status(401).send({successful: false, result: "Wrong/no access key is given."});
     
-    res.status(400).send({successful: false, result: "make sure all the correct fields are included in the json."})
-
   } else {
-    
-    var newData = {
-      "_id": nextSeqVal("requestid"),
-      "requester": body.requester,
-      "event": body.event,
-      "tagged": body.tagged,
-      "date": body.date,
-      "description": body.description,
-      "timestamp": Math.floor(Date.now() / 1000),
-      "urgency": body.urgency
+  
+    console.log("post req.body: ", req.body);
+
+    var body = req.body;
+
+    var requirement = ["tagged", "event", "requester", "date", "description", "urgency"];
+
+    var passed = true;
+
+    for (var i=0; i<requirement.length; i++) {
+      if (!(requirement[i] in body)) {
+        passed = false;
+        break;
+      }
     }
 
-    console.log("new data parsed from body: ", newData);
+    if (!passed) {
+
+      res.status(400).send({successful: false, result: "make sure all the correct fields are included in the json."})
+
+    } else {
       
-    var newRequest = new Request(newData);
-    newRequest.save((err, newRequest) => {
-      if (err) {
-        console.log(err);
-      }
-      console.log("Add to db! -> ", newRequest);
+      nextSeqVal("requestid")
+        .then(seq_val => {
+        
+        console.log("seq_val: ", seq_val);
+        var newData = {
+          "_id": seq_val,
+          "requester": body.requester,
+          "event": body.event,
+          "tagged": body.tagged,
+          "date": body.date,
+          "description": body.description,
+          "timestamp": Math.floor(Date.now() / 1000),
+          "urgency": body.urgency
+        }
 
-      var resp = {successful: true, result: newData}
+        console.log("new data parsed from body: ", newData);
 
-      res.status(201).send(resp);
+        var newRequest = new Request(newData);
+        newRequest.save((err, newRequest) => {
+          if (err) {
+            console.log("post error: ", err);
+            console.log("post not executed!");
+            res.status(404).send({successful: false, result: 'Internal server error'});
 
-      var users = Object.keys(body.tagged);
-      //send notifications to tagged users (wip...)
-      for (var j=0; j<users.length; j++) {
-          notifyUser(users[j], newData);
-      }
-    })
+          } else {
+            console.log("Add to db! -> ", newRequest);
+
+            var resp = {successful: true, result: newData}
+
+            res.status(201).send(resp);
+
+            var users = Object.keys(body.tagged);
+            for (var j=0; j<users.length; j++) {
+              if (!(notifyUser(users[j], newData))) {
+                console.log("notify user failed...");
+              }
+            }
+          }
+
+        })
+      
+      }).catch(err => {console.log("seq error:", err)})
+    }
   }
 });
 

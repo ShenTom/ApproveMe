@@ -1,9 +1,10 @@
 var slack = require('slack');
 
-//im.open + chat.postMessage (work in progress...)
+//im.open + chat.postMessage
 
 const notifyUser = function (userID, data) {
   
+  return new Promise((resolve, reject) => {
   
     slack.im.open({token: process.env.BTOKEN, user: userID})
       .then(room => {
@@ -11,7 +12,7 @@ const notifyUser = function (userID, data) {
         console.log("Open room: ", room);
         if (room.okay == false) {
             console.log("invalid username...");
-            return
+            reject("invalid username");
         } else {
           
           
@@ -90,12 +91,20 @@ const notifyUser = function (userID, data) {
                         ]
               }]
 
-              slack.chat.postMessage({token: process.env.BTOKEN, channel: room.channel.id, text: "", attachments: attachments});
+              slack.chat.postMessage({token: process.env.BTOKEN, channel: room.channel.id, text: "", attachments: attachments})
+                .then(chat => {
+                resolve(chat.ok);
+              });
               
           })
         }
       
-    }).catch(error => {console.log(error)})
+    }).catch(error => {
+      console.log(error);
+      reject(error);
+    })
+  
+  })
 }
 
 
