@@ -31,7 +31,7 @@ request(options, (err, resp, body)=> {
 
 ## API Endpoints
 
-###Error message for any bad request
+### Error message for any bad request
 
 ``` javascript
 { 
