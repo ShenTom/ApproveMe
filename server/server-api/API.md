@@ -93,6 +93,8 @@ Sample Response JSON
 
 ### `/requests` [POST]
 
+**POST Request**
+
 Sample Request JSON
 
 ```javascript
@@ -139,6 +141,8 @@ Sample Response JSON
 
 ### `/requests/:req_id` [PUT]
 
+**PUT Request**
+
 Sample Request JSON
 
 ```javascript
@@ -173,10 +177,12 @@ Sample Response JSON
 }
 ```
    
-   * Send any of the updated field of the following: **tagged**, **event**, **date**, **description**, & "urgency", is fine. ie. If the user only updated the event name, just send {"event": new_name}.
+   * Send any of the updated field of the following: **tagged**, **event**, **date**, **description**, & **urgency**, is fine. ie. If the user only updates the event name, just send {"event": new_name}.
    * **Requester** and **channel** fields are not udpateable. 
 
 ### `/requests/:req_id` [DELETE]
+
+**DELETE Request**
 
 Sample Response JSON
 
@@ -189,6 +195,8 @@ Sample Response JSON
    * Please use this endpoint carefully. Make sure to provide a confirmation message to the user before using this endpoint.
 
 ### `/requests/:req_id/users/:user_id` [POST]
+
+**POST Request**
 
 Sample Request JSON
 
