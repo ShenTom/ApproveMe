@@ -1,5 +1,5 @@
 # ApproveMe API Documentation
-
+  
 ## Description
 The documentat for using ApproveMe server API. The server is deployed on [Glitch](glitch.com).
 
