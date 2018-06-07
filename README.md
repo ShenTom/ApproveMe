@@ -1,5 +1,5 @@
 # ApproveMe
-   
+      
 Have you ever had a task you want to do but requires others' approvals? Then, you go on Slack and ask the others. Some say yes, some say no and the replies are all over the chat conversation. What's even worse? If the task falls short, you may not even be able to dig up the replies of others!
 
 ApproveMe is a Slack application that allows a user to send a request to tagged users to gauge their approvals. The main workflow would be as following:
