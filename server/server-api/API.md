@@ -40,6 +40,24 @@ request(options, (err, resp, body)=> {
 }
 ```
 
+### A Sample Response Request
+
+``` javascript
+{
+    "_id": 1,
+    "requester": "U79456HA5",
+    "event": "Testing Add feature",
+    "tagged": {
+        "U79456HA5": 1,
+        "U7A5FL7P1": 0
+    },
+    "date": "03-18-2018",
+    "description": "Testingggg",
+    "timestamp": 1525257024,
+    "urgency": 2
+}
+```
+
 ### `/requests` [GET]
 **GET Request**
 
@@ -108,7 +126,7 @@ Sample Request JSON
 	},
 	"date": "03-18-2018",
 	"description": "Testingggg",
-	"urgency": "2"
+	"urgency": 2
 }
 ```
 
@@ -129,7 +147,7 @@ Sample Response JSON
 		"date": "03-18-2018",
 		"description": "Testingggg",
 		"timestamp": 1525257024,
-		"urgency": "2"
+		"urgency": 2
 	}
 }
 ```
@@ -154,7 +172,7 @@ Sample Request JSON
 	},
 	"date": "03-18-2018",
 	"description": "Testingggg",
-	"urgency": "2"
+	"urgency": 2
 }
 ```
 
@@ -172,7 +190,7 @@ Sample Response JSON
 		},
 		"date": "03-18-2018",
 		"description": "Testingggg",
-		"urgency": "2"
+		"urgency": 2
 	}
 }
 ```
@@ -223,7 +241,7 @@ Sample Response JSON
 		"date": "03-18-2018",
 		"description": "Testingggg",
 		"timestamp": 1525257024,
-		"urgency": "2"
+		"urgency": 2
 	}
 }
 ```

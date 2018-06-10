@@ -1,8 +1,7 @@
 var sendMessage = require("./sendMessage");
 var slack = require('slack');
-const MongoClient = require('mongodb').MongoClient;
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://edward&tom:cactes@ds255797.mlab.com:55797/approveme');
+var request = require('request');
+var listBuilder = require('../libraries/listBuilder');
 
 var Request = require('../models/requests.js');
 
@@ -21,47 +20,36 @@ const commands = function (reqBody, command) {
     
   //send list
   } else if (command == "list") {
-
-      var list = {
-        "requested": [],
-        "tagged": []
+    
+      var url = process.env.API_URL + '/requests/users/' + reqBody.user_id;
+      var options = {
+          uri: url,
+          method: 'GET',
+          headers: {
+              'access-key': process.env.ACCESS_KEY
+          }
       }
-      
-      Request.find((err, result) => {
-      
-        if (err) {
-          console.log(err);
-        }
-      
-        var target = reqBody.user_id;
-      
-        for (var i=0; i< result.length; i++) {
-            console.log(result[i]);
-            if (result[i].requester == target) {
-                list.requested.push(result[i]);
-            }
-            if (target in result[i].tagged) {
-                list.tagged.push(result[i]);
-            }
-        }
-        console.log(list);
 
-        var msg = {
-            "response_type": "ephemeral",
-            "attachments": [{
-                "text": "Here are your requests!",
-                "callback_id": "userRequests",
-                "color": "#3AA3E3",
-                "attachment_type": "default"
-            }]
+      request(options, (err, resp, body)=> {
+        
+        var data = JSON.parse(body);
+        
+        if (err || !data.successful) {
+          console.log("fetching from requests api failed...");
+          
+        } else {
+
+          var msg = listBuilder(data.result);
+              
+          //need to figure out how to represent each request...
+          //maybe just top 3 and link htem to the interface?
+
+          //add notify api!!
+          //open request: notify button, closed request: result
+
+          sendMessage(reqBody.response_url, msg);
+          
         }
-        //need to figure out how to represent each request...
-        //maybe just top 3 and link htem to the interface?
-        
-        //add notify api!!
-        //open request: notify button, closed request: result
-        
-        sendMessage(reqBody.response_url, msg);
       
       });
     
@@ -74,8 +62,6 @@ const commands = function (reqBody, command) {
       for (var j=0; j< blocks.length;j++) {
           list += blocks[j] + " ";
       }
-    
-      //send error that the tagged ppl are not in the channel (wip..)
   
       //open dialog
     
