@@ -26,104 +26,95 @@ router.post('/', urlencodedParser, (req, res) =>{
     
     if (payload.token !== process.env.ATOKEN) {
         res.sendStatus(500);
+      
     } else {
         if (payload.callback_id === 'requestDialog') {
     
             console.log("Payload: ",payload);
           
-            Request.find({ event: payload.submission.name }, (err, result) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log(result)
+            if (parseDate(payload.submission.date) == false) {
               
-                if (result.length != 0) {
-                    console.log("The event is already in the database!!")
-                    var msg = {
-                        "errors": [{
-                           "name": "name",
-                           "error": "The name exists in the database already!"
-                        }]
-                    }
-                    res.send(msg);
-                  
-                } else if (parseDate(payload.submission.date) == false) {
-                    console.log("The date format is incorrect.")
-                    var msg = {
-                        "errors": [{
-                           "name": "name",
-                           "error": "The date format is incorrect."
-                        }]
-                    }
-                    res.send(msg);
-                
-                } else {
-                    
-                    res.status(200).end()
-                  
-                    var names = payload.submission.tagged;
-                    var data = parseTags(names)
-                    var obj = {};
-                    for (var i=0; i<data.length; i++) {
-                        obj[data[i]] = 1;
-                    }
+              console.log("The date format is incorrect.")
+              var msg = {
+                  "errors": [{
+                     "name": "name",
+                     "error": "The date format is incorrect."
+                  }]
+              }
+              res.status(401).send(msg);
 
-                    console.log("people: ", obj);
+            } else {
 
+                res.status(200).end()
 
-//                     if (payload.submission.comments) {
-//                         var comments = payload.submission.comments
-//                         var object = {};
-//                         object[payload.user.id] = comments
-//                         var time = Math.floor(Date.now() / 1000)
-//                         time = time.toString();
-//                         var temp = {}
-//                         temp[time] = object;
-//                     }
-
-//                     console.log("object: ", object)
-//                     console.log("time: ", temp)
-                  
-                    var urgency = parseInt(payload.submission.urgency);
-                  
-                    console.log("Urgency (int): ", urgency)
-
-                    var newData = {
-                        "requester": payload.user.id,
-                        "event": payload.submission.name,
-                        "channel": payload.channel.id,
-                        "tagged": obj,
-                        "date": payload.submission.date,
-                        "description": payload.submission.description,
-                        "timestamp": Math.floor(Date.now() / 1000),
-                        "urgency": urgency
-                    }
-
-                    console.log("result: ", newData);
-
-                    var newRequest = new Request(newData);
-                    newRequest.save((err, newRequest) => {
-                        if (err) {
-                          console.log(err);
-                        }
-                        console.log("Add to db! -> ", newRequest);
-                      
-                        var msg = {
-                           "response_type": "ephemeral",
-                           "text": "Your request has been sent to the tagged user(s)!"
-                        }
-                        sendMessage(payload.response_url, msg)
-        
-                        //now send the notification to tagged users
-                        for (var j=0; j<data.length; j++) {
-                            notifyUser(data[j], newData);
-                        }
-                        
-                        notifyRequester(newData.requester, newData, "created");
-
-                    })
+                var names = payload.submission.tagged;
+                var data = parseTags(names)
+                var obj = {};
+                for (var i=0; i<data.length; i++) {
+                    obj[data[i]] = 1;
                 }
-            });
+
+                console.log("people: ", obj);
+
+
+  //                     if (payload.submission.comments) {
+  //                         var comments = payload.submission.comments
+  //                         var object = {};
+  //                         object[payload.user.id] = comments
+  //                         var time = Math.floor(Date.now() / 1000)
+  //                         time = time.toString();
+  //                         var temp = {}
+  //                         temp[time] = object;
+  //                     }
+
+  //                     console.log("object: ", object)
+  //                     console.log("time: ", temp)
+
+                var urgency = parseInt(payload.submission.urgency);
+
+                console.log("Urgency (int): ", urgency)
+
+                var newData = {
+                    "requester": payload.user.id,
+                    "event": payload.submission.name,
+                    "channel": payload.channel.id,
+                    "tagged": obj,
+                    "date": payload.submission.date,
+                    "description": payload.submission.description,
+                    "urgency": urgency
+                }
+
+                console.log("result: ", newData);
+              
+                var url = process.env.API_URL + '/requests/';
+                var options = {
+                    uri: url,
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json',
+                        'access-key': process.env.ACCESS_KEY
+                    },
+                    json: newData
+                }
+                
+                request(options, (err, resp, body)=> {
+                  var data = JSON.parse(body);
+        
+                  if (err || !data.successful) {
+                    console.log("fetching from requests api failed...");
+
+                  } else {
+
+                    console.log("POST new request successfully");
+                    
+                    //This is supposed to be on the api side
+                    notifyRequester(newData.requester, newData, "created");
+
+                  }
+                  
+                });
+              
+            }
           
         } else if(payload.callback_id == 'requester') {
           console.log("Requester Payload: ", payload);
@@ -137,7 +128,7 @@ router.post('/', urlencodedParser, (req, res) =>{
             var temp = Object.keys(result.tagged);
             
             for (var i=0; i<temp.length; i++) {
-              if (result.tagged[temp[i]] == 1) {
+              if (result.tagged[temp[i]] == 0) {
                 notifyUser(temp[i], result);
               }
             }
