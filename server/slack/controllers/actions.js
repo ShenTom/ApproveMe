@@ -56,7 +56,6 @@ router.post('/', urlencodedParser, (req, res) =>{
 
                 console.log("people: ", obj);
 
-
   //                     if (payload.submission.comments) {
   //                         var comments = payload.submission.comments
   //                         var object = {};
