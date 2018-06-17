@@ -86,6 +86,21 @@ Sample Response JSON
    * Return all the events in the database.
 
 
+### `/requests/:req_id` [GET]
+**GET Request**
+
+Sample Response JSON
+
+``` javascript
+{ 
+	"successful": true,
+	"result": {EVENT}
+}
+```
+   * Return the request object with the specific id.
+   * Successful is false if an invalid req_id is entered.
+
+
 ### `/requests/users/:user_id` [GET]
 **GET Request**
 
