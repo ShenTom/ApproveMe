@@ -57,6 +57,34 @@ router.get('/', (req, res) => {
   }
 });
 
+router.get('/:req_id', (req, res) => {
+  if (req.headers['access-key'] !== process.env.ACCESS_KEY) {
+    res.status(401).send({successful: false, result: "Wrong/no access key is given."});
+    
+  } else {
+    
+    Request.findOne({_id: req.params.req_id},(err, result) => {
+      
+      console.log("result:", result);
+      
+      if (err) {
+        console.log("error in get: ", err);
+        res.status(404).send({successful: false, result: "Internal server error"});
+        
+      } else {
+        
+        if (result === null) {
+          res.status(404).send({successful: false, result: "invalid id"});
+        
+        } else {
+          res.send({successful: true, result: result});
+        }
+      }
+    });
+    
+  }
+});
+
 router.get('/users/:user_id', (req, res) =>{
   
   if (req.headers['access-key'] !== process.env.ACCESS_KEY) {
