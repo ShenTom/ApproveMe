@@ -3,8 +3,6 @@ var slack = require('slack');
 var request = require('request');
 var listBuilder = require('../libraries/listBuilder');
 
-var Request = require('../models/requests.js');
-
 
 const commands = function (reqBody, command) {
   
@@ -21,7 +19,7 @@ const commands = function (reqBody, command) {
   //send list
   } else if (command == "list") {
     
-      var url = process.env.API_URL + '/requests/users/' + reqBody.user_id;
+      var url = process.env.API_URL + 'users/' + reqBody.user_id;
       var options = {
           uri: url,
           method: 'GET',

@@ -7,8 +7,6 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var sendMessage = require('../libraries/sendMessage');
 var commands = require('../libraries/commands');
 
-var Request = require('../models/requests.js');
-
 
 router.post('/', urlencodedParser, (req, res) =>{
   
