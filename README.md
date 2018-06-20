@@ -7,4 +7,4 @@ ApproveMe is a Slack application that allows a user to send a request to tagged 
 * Then once the user submits a form about the request, the server will send a notification to the tagged users through a chatbot and ask for their responses.
 * Once the tagged users respond to the request, it will be stored in the database. Then, anyone involed in this request at any time can just use the listing command or simply open up the front end web application to see the result.
 
-No more miscommunication or scapegoating!
+No more miscommunication!
