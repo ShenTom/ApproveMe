@@ -8,7 +8,7 @@ Server url: <https://approve-me-api.glitch.me/>
 **INCLUDE THE ACCESS KEY IN THE HEADER TO USE THE API**
 
 Sample Request Using Request Library
-
+         
 ``` javascript
 var request = require('request');
 
