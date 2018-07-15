@@ -46,8 +46,12 @@ class App extends Component {
   }
 
   async getRequests(){
-    const res = await fetch(url+"/getRequests?user_id="+this.props.location.state.user_id, {
-                        method: 'POST'
+    const res = await fetch(url+"/requests/users/"+this.props.location.state.user_id, {
+                        method: 'GET',
+                        headers: {
+                          'Content-type': 'application/json',
+                          'access-key': 'cactes2018'
+                        }
                       })
     const resJson = await res.json();
     return resJson

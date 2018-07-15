@@ -1,31 +1,30 @@
-import React, { Component } from 'react';
-import "./RequestsView.css"
-import EmptyStateView from './EmptyStateView'
-import RequestBar from './requestBar/RequestBar'
-import RequestDetailView from './requestDetailView/RequestDetailView'
+import React, { Component } from "react";
+import "./RequestsView.css";
+import EmptyStateView from "./EmptyStateView";
+import RequestBar from "./requestBar/RequestBar";
+import RequestDetailView from "./requestDetailView/RequestDetailView";
 
 class RequestsView extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       value: "",
       requests: this.props.requests,
       relatedRequests: this.props.requests,
       requestFocused: false,
       inFocusName: ""
-    }
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleRequestDetails = this.handleRequestDetails.bind(this);
     this.handleBackgroundPress = this.handleBackgroundPress.bind(this);
   }
 
-  componentWillReceiveProps(prop){
+  componentWillReceiveProps(prop) {
     this.setState({
       requests: prop.requests,
       relatedRequests: this.props.requests
-    })
-
+    });
   }
 
   handleSubmit(event) {
@@ -33,53 +32,64 @@ class RequestsView extends Component {
   }
 
   handleChange(event) {
-   this.setState({value: event.target.value});
+    this.setState({ value: event.target.value });
   }
 
-  handleRequestDetails(request, event){
+  handleRequestDetails(request, event) {
     this.setState({
       requestFocused: true,
       inFocusRequest: request
-    })
-
+    });
   }
 
-  handleBackgroundPress(e){
+  handleBackgroundPress(e) {
     this.setState({
       requestFocused: false,
       inFocusName: ""
-    })
+    });
   }
 
   render() {
     let content;
-    content = <EmptyStateView />
-    content = <div className="request-container">
-                <div className="task-group">
-                  <div className="group-header">
-                    <span className="">Requests without a channel</span>
-                  </div>
-                </div>
-              </div>
-    content = <div className="request-container">
-                <div className="task-list">
-                  {
-                    this.state.requests.map((request)=>{
-                      if(request.channel == this.props.channel_id){
-                        return (<RequestBar key={request.event}handlePress={this.handleRequestDetails} request={request} inFocus={this.state.requestFocused && this.state.inFocusRequest.event === request.event}/>)
-                      }
-                    })
+    content = <EmptyStateView />;
+    content = (
+      <div className="request-container">
+        <div className="task-group">
+          <div className="group-header">
+            <span className="">Requests without a channel</span>
+          </div>
+        </div>
+      </div>
+    );
+    content = (
+      <div className="request-container">
+        <div className="task-list">
+          {this.state.requests.map(request => {
+            if (request.channel == this.props.channel_id) {
+              return (
+                <RequestBar
+                  key={request.event}
+                  handlePress={this.handleRequestDetails}
+                  request={request}
+                  inFocus={
+                    this.state.requestFocused &&
+                    this.state.inFocusRequest.event === request.event
                   }
-
-                </div>
-              </div>
+                />
+              );
+            }
+          })}
+        </div>
+      </div>
+    );
     let requestInfoView;
-    if (this.state.requestFocused){
-      requestInfoView = <RequestDetailView request={this.state.inFocusRequest}/>
+    if (this.state.requestFocused) {
+      requestInfoView = (
+        <RequestDetailView request={this.state.inFocusRequest} />
+      );
     }
 
     return (
-
       <div className="requestsView">
         <div className="container" onClick={this.handleBackgroundPress}>
           <div className="mainHeader">
@@ -95,8 +105,8 @@ class RequestsView extends Component {
                   placeholder="Add a task..."
                   title="Add a task [ENTER]"
                   onChange={this.handleChange}
-                  value={this.state.value}>
-                </input>
+                  value={this.state.value}
+                />
                 <div className="create-request-button">
                   <i className="material-icons">add</i>
                 </div>

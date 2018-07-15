@@ -1,0 +1,29 @@
+{
+  "name": "ApproveMe",
+  "version": "1.0.0",
+  "description": "Have you ever had a task you want to do but requires others' approvals? Then, you go on Slack and ask the others. Some say yes, some say no and the replies are all over the chat conversation. What's even worse? If the task falls short, you may not even be able to dig up the replies of others!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShenTom/ApproveMe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShenTom/ApproveMe/issues"
+  },
+  "homepage": "https://github.com/ShenTom/ApproveMe#readme",
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-react": "^7.10.0",
+    "prettier": "^1.5.3"
+  }
+}

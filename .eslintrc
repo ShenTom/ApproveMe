@@ -1,0 +1,15 @@
+{
+  "parser": "babel-eslint",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "plugins": ["react"],
+  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "rules": {
+    "no-console": "warn",
+    "global-require": "off",
+    "no-undef": "off",
+    "no-unused-vars": "warn"
+  }
+}

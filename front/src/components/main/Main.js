@@ -1,40 +1,44 @@
-import React, {Component} from 'react';
-import './Main.css';
-import RequestsView from './requestsView/RequestsView';
-import ChannelView from './channelView/ChannelView';
-import {connect} from 'react-redux';
+import React, { Component } from "react";
+import "./Main.css";
+import RequestsView from "./requestsView/RequestsView";
+import ChannelView from "./channelView/ChannelView";
+import { connect } from "react-redux";
 
 class Main extends Component {
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
   }
-  render(){
-    switch(this.props.view) {
+  render() {
+    switch (this.props.view) {
       case "CHANNELS":
-        return(
+        return (
           <div className="main">
-            <ChannelView channels={this.props.loadedData.channels} groups={this.props.loadedData.groups} updateView={this.props.updateView}/>
+            <ChannelView
+              channels={this.props.loadedData.channels}
+              groups={this.props.loadedData.groups}
+              updateView={this.props.updateView}
+            />
           </div>
-        )
+        );
       case "DASHBOARD":
-        return(
-          <div className="main">
-
-          </div>
-        )
+        return <div className="main" />;
       default:
-        return(
+        return (
           <div className="main">
-            <RequestsView name={this.props.view} requests={this.props.loadedData.requests} channel_id={this.props.channel_id}/>
+            <RequestsView
+              name={this.props.view}
+              requests={this.props.loadedData.requests}
+              channel_id={this.props.channel_id}
+            />
           </div>
-        )
+        );
     }
   }
 }
 
 function mapStateToProps(state) {
   return {
-    loadedData: state.data,
+    loadedData: state.data
   };
 }
 
