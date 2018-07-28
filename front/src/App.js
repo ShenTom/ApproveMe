@@ -1,32 +1,37 @@
-import React, { Component } from 'react'
-import { Switch, Route } from 'react-router-dom'
-import './App.css';
-import LoginPage from './components/loginPage/LoginPage';
-import LoggedInView from './components/LoggedInView'
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { Switch, Route, Link } from "react-router-dom";
 
+const LoginPage = () => {
+  return (
+    <div>
+      <p>Login Page</p>
+    </div>
+  );
+};
 
-class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      main_view: "DASHBOARD"
-    }
-    this.update_main_view = this.update_main_view.bind(this)
-  }
+const Home = () => {
+  return (
+    <div>
+      <p>Home Page</p>
+      <Link to="/login">Login Page</Link>
+    </div>
+  );
+};
 
-  update_main_view(new_view){
-    this.setState({
-      main_view: new_view
-    });
-  }
+const App = () => {
+  return (
+    <Switch>
+      <Route exact path="/login" component={LoginPage} />
+      <Route exact path="/" component={Home} />
+    </Switch>
+  );
 
-  render() {
-    return (
-      <Switch>
-        <Route exact path='/login' component={LoginPage}/>
-        <Route exact path='/' component={LoggedInView}/>
-      </Switch>
-    );
-  }
-}
+  // return (
+  //   <div>
+  //     <p>React here!</p>
+  //   </div>
+  // );
+};
+
 export default App;
