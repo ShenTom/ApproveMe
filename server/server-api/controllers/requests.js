@@ -1,15 +1,15 @@
-var express = require("express");
-var router = express.Router();
-var bodyParser = require("body-parser");
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const MongoClient = require("mongodb").MongoClient;
-var mongoose = require("mongoose");
-var notifyUser = require("../libraries/notifyUser");
-var nextSeqVal = require("../libraries/nextSeqVal");
-var notifyRequester = require("../libraries/notifyRequester");
+const mongoose = require("mongoose");
+const notifyUser = require("../libraries/notifyUser");
+const nextSeqVal = require("../libraries/nextSeqVal");
+const notifyRequester = require("../libraries/notifyRequester");
 mongoose.connect(process.env.DB_LOGIN);
 
-var Request = require("../models/requests.js");
+const Request = require("../models/requests.js");
 
 router.get("/", (req, res) => {
   res.header("Content-Type", "application/json");
@@ -17,13 +17,11 @@ router.get("/", (req, res) => {
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
     return res
       .status(401)
-      .send({ successful: false, result: "Wrong/no access key is given." });
+      .send({ successful: false, result: "Wrong/ no access key is given." });
   }
 
   Request.find((err, result) => {
     if (err) {
-      console.log("error in get: ", err);
-
       return res
         .status(404)
         .send({ successful: false, result: "Internal server error" });
