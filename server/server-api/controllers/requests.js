@@ -222,13 +222,13 @@ router.put("/:req_id", urlencodedParser, (req, res) => {
     return accumulator;
   }, {});
 
-  var query = { _id: req.params.req_id };
-
-  update["description"] += " (edited)";
+  if (update["description"]) {
+    update["description"] += " (edited)";
+  }
 
   console.log("new data parsed from body: ", update);
 
-  Request.update(query, update, (err, raw) => {
+  Request.update({ _id: req.params.req_id }, update, (err, raw) => {
     if (err) {
       const error = "Internal server error: " + err;
 
