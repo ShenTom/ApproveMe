@@ -287,7 +287,9 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
     });
   }
 
-  Request.findOne({ _id: req.params.req_id }, (err, result) => {
+  const query = { _id: req.params.req_id };
+
+  Request.findOne(query, (err, result) => {
     if (err) {
       const error = "Internal server error: " + err;
 
