@@ -147,7 +147,6 @@ router.post("/", urlencodedParser, (req, res) => {
 
   nextSeqVal("requestid")
     .then(seq_val => {
-      console.log("seq_val: ", seq_val);
       var newData = {
         _id: seq_val,
         requester: body.requester,
@@ -163,43 +162,41 @@ router.post("/", urlencodedParser, (req, res) => {
 
       var newRequest = new Request(newData);
 
-      // TODO: promise chain
-      newRequest.save((err, newRequest) => {
-        if (err) {
-          const error = "Internal server error: " + err;
+      return newRequest.save();
+    })
+    .then(newRequest => {
+      console.log("Add to db! -> ", newRequest);
 
-          return res.status(404).send({ successful: false, result: error });
-        }
+      res.status(201).send({ successful: true, result: newRequest });
 
-        console.log("Add to db! -> ", newRequest);
-
-        res.status(201).send({ successful: true, result: newData });
-
-        Object.keys(body.tagged).forEach(user => {
-          notifyUser(user, newData)
-            .then(succ => {
-              if (!succ) {
-                console.log("Notifying user not succ:", users[j]);
-              }
-            })
-            .catch(err => {
-              console.log("Notifying user err: ", err);
-            });
-        });
-
-        notifyRequester(newData.requester, newData, "created")
+      Object.keys(body.tagged).forEach(user => {
+        notifyUser(user, newRequest)
           .then(succ => {
             if (!succ) {
-              console.log("Notifying requester not succ:", users[j]);
+              console.log("Notifying user not succ:", user);
             }
           })
           .catch(err => {
-            console.log("Notifying requester err: ", err);
+            console.log("Notifying user err: ", err);
           });
       });
+
+      notifyRequester(newRequest.requester, newRequest, "created")
+        .then(succ => {
+          if (!succ) {
+            console.log("Notifying requester not succ");
+          }
+        })
+        .catch(err => {
+          console.log("Notifying requester err: ", err);
+        });
     })
     .catch(err => {
-      console.log("seq error:", err);
+      if (err) {
+        const error = "Internal server error: " + err;
+
+        return res.status(404).send({ successful: false, result: error });
+      }
     });
 });
 
