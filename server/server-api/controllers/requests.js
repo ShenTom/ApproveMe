@@ -33,28 +33,27 @@ router.get("/", (req, res) => {
       pending: []
     };
 
-    // TODO: use .map or forEach
-    for (let i = 0; i < result.length; i++) {
+    result.forEach(request => {
       let pending = false;
       let declined = false;
 
-      for (let x in result[i].tagged) {
-        if (result[i].tagged[x] == -1) {
+      for (let x in request.tagged) {
+        if (request.tagged[x] == -1) {
           declined = true;
           break;
-        } else if (result[i].tagged[x] == 0) {
+        } else if (request.tagged[x] == 0) {
           pending = true;
         }
       }
 
       if (!declined && !pending) {
-        requests.accepted.push(result[i]);
+        requests.accepted.push(request);
       } else if (declined) {
-        requests.declined.push(result[i]);
+        requests.declined.push(request);
       } else if (pending) {
-        requests.pending.push(result[i]);
+        requests.pending.push(request);
       }
-    }
+    });
 
     return res.send({ successful: true, result: requests });
   });
