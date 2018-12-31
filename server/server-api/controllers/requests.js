@@ -214,42 +214,37 @@ router.put("/:req_id", urlencodedParser, (req, res) => {
   res.header("Content-Type", "application/json");
 
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    console.log("put req.body: ", req.body);
-
-    var body = req.body;
-
-    var requirement = ["tagged", "event", "date", "description", "urgency"];
-
-    var update = {};
-
-    var query = { _id: req.params.req_id };
-
-    for (var i = 0; i < requirement.length; i++) {
-      if (requirement[i] in body) {
-        update[requirement[i]] = body[requirement[i]];
-      }
-    }
-
-    update["description"] += " (edited)";
-
-    console.log("new data parsed from body: ", update);
-
-    Request.update(query, update, function(err, raw) {
-      if (err) {
-        console.log("update fail: ", err);
-        console.log("update not executed!");
-        res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" });
-      } else {
-        res.status(200).send({ successful: true, result: update });
-      }
-    });
   }
+
+  console.log("put req.body: ", req.body);
+
+  var body = req.body;
+
+  const requirement = ["tagged", "event", "date", "description", "urgency"];
+
+  const update = requirement.reduce((accumulator, currField) => {
+    if (currField in body) {
+      accumulator[currField] = body[currField];
+    }
+    return accumulator;
+  }, {});
+
+  var query = { _id: req.params.req_id };
+
+  update["description"] += " (edited)";
+
+  console.log("new data parsed from body: ", update);
+
+  Request.update(query, update, (err, raw) => {
+    return err
+      ? res
+          .status(404)
+          .send({ successful: false, result: "Internal server error" })
+      : res.status(200).send({ successful: true, result: update });
+  });
 });
 
 router.delete("/:req_id", urlencodedParser, (req, res) => {
