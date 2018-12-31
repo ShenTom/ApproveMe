@@ -1,5 +1,4 @@
 {
-    "presets": [
-        "env", "react"
-    ]
+  "presets": ["env", "react"],
+  "plugins": ["transform-es2015-template-literals"]
 }
