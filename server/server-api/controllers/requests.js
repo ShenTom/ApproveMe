@@ -266,12 +266,10 @@ router.delete("/:req_id", urlencodedParser, (req, res) => {
           .status(404)
           .send({ successful: false, result: "Internal server error" });
       } else {
-        res
-          .status(200)
-          .send({
-            successful: true,
-            result: "The request with this request id has been removed."
-          });
+        res.status(200).send({
+          successful: true,
+          result: "The request with this request id has been removed."
+        });
       }
     });
   }
@@ -328,12 +326,10 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
                   if (err) {
                     console.log("action approve error:", err);
                     console.log("action approve not executed!");
-                    res
-                      .status(404)
-                      .send({
-                        successful: false,
-                        result: "Internal server error"
-                      });
+                    res.status(404).send({
+                      successful: false,
+                      result: "Internal server error"
+                    });
                   } else {
                     result.tagged = tagged;
                     res.status(200).send({ successful: true, result: result });
@@ -371,12 +367,10 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
                   if (err) {
                     console.log("action decline error:", err);
                     console.log("action decline not executed!");
-                    res
-                      .status(404)
-                      .send({
-                        successful: false,
-                        result: "Internal server error"
-                      });
+                    res.status(404).send({
+                      successful: false,
+                      result: "Internal server error"
+                    });
                   } else {
                     result.tagged = tagged;
                     res.status(200).send({ successful: true, result: result });
@@ -417,12 +411,10 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
                     });
                   } else {
                     console.log("notify user failed.");
-                    res
-                      .status(404)
-                      .send({
-                        successful: false,
-                        result: "Internal server error"
-                      });
+                    res.status(404).send({
+                      successful: false,
+                      result: "Internal server error"
+                    });
                   }
                 })
                 .catch(err => {
