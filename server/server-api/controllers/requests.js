@@ -12,207 +12,207 @@ mongoose.connect(process.env.DB_LOGIN);
 var Request = require("../models/requests.js");
 
 router.get("/", (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    Request.find((err, result) => {
-      if (err) {
-        console.log("error in get: ", err);
-        res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" });
-      } else {
-        var requests = {
-          accepted: [],
-          declined: [],
-          pending: []
-        };
-
-        for (var i = 0; i < result.length; i++) {
-          var pending = false;
-          var declined = false;
-
-          for (var x in result[i].tagged) {
-            if (result[i].tagged[x] == -1) {
-              declined = true;
-              break;
-            } else if (result[i].tagged[x] == 0) {
-              pending = true;
-            }
-          }
-
-          if (!declined && !pending) {
-            requests.accepted.push(result[i]);
-          } else if (declined) {
-            requests.declined.push(result[i]);
-          } else if (pending) {
-            requests.pending.push(result[i]);
-          }
-        }
-
-        res.send({ successful: true, result: requests });
-      }
-    });
   }
+
+  Request.find((err, result) => {
+    if (err) {
+      console.log("error in get: ", err);
+
+      return res
+        .status(404)
+        .send({ successful: false, result: "Internal server error" });
+    }
+
+    const requests = {
+      accepted: [],
+      declined: [],
+      pending: []
+    };
+
+    // TODO: use .map or forEach
+    for (let i = 0; i < result.length; i++) {
+      let pending = false;
+      let declined = false;
+
+      for (let x in result[i].tagged) {
+        if (result[i].tagged[x] == -1) {
+          declined = true;
+          break;
+        } else if (result[i].tagged[x] == 0) {
+          pending = true;
+        }
+      }
+
+      if (!declined && !pending) {
+        requests.accepted.push(result[i]);
+      } else if (declined) {
+        requests.declined.push(result[i]);
+      } else if (pending) {
+        requests.pending.push(result[i]);
+      }
+    }
+
+    return res.send({ successful: true, result: requests });
+  });
 });
 
 router.get("/:req_id", (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    Request.findOne({ _id: req.params.req_id }, (err, result) => {
-      console.log("result:", result);
-
-      if (err) {
-        console.log("error in get: ", err);
-        res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" });
-      } else {
-        if (result === null) {
-          res.status(404).send({ successful: false, result: "invalid id" });
-        } else {
-          res.send({ successful: true, result: result });
-        }
-      }
-    });
   }
+
+  Request.findOne({ _id: req.params.req_id }, (err, result) => {
+    if (err) {
+      console.log("error in get: ", err);
+      return res
+        .status(404)
+        .send({ successful: false, result: "Internal server error" });
+    }
+
+    return result
+      ? res.send({ successful: true, result: result })
+      : res.status(404).send({ successful: false, result: "invalid id" });
+  });
 });
 
 router.get("/users/:user_id", (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res.status(401).send("Wrong/no access key is given.");
-  } else {
-    var list = {
-      requested: [],
-      tagged: []
-    };
-
-    Request.find((err, result) => {
-      if (err) {
-        console.log("error in get with id: ", err);
-        res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" });
-      }
-
-      var target = req.params.user_id;
-
-      for (var i = 0; i < result.length; i++) {
-        if (result[i].requester == target) {
-          list.requested.push(result[i]);
-        }
-        if (target in result[i].tagged) {
-          list.tagged.push(result[i]);
-        }
-      }
-
-      res.send({ successful: true, result: list });
-    });
+    return res.status(401).send("Wrong/no access key is given.");
   }
+
+  const list = {
+    requested: [],
+    tagged: []
+  };
+
+  Request.find((err, result) => {
+    if (err) {
+      console.log("error in get with id: ", err);
+      return res
+        .status(404)
+        .send({ successful: false, result: "Internal server error" });
+    }
+
+    const target = req.params.user_id;
+
+    result.forEach(item => {
+      if (item.requester == target) {
+        list.requested.push(item);
+      }
+      if (target in item.tagged) {
+        list.tagged.push(item);
+      }
+    });
+
+    return res.send({ successful: true, result: list });
+  });
 });
 
 router.post("/", urlencodedParser, (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    console.log("post req.body: ", req.body);
+  }
+  console.log("post req.body: ", req.body);
 
-    var body = req.body;
+  var body = req.body;
 
-    var requirement = [
-      "tagged",
-      "event",
-      "requester",
-      "date",
-      "description",
-      "urgency"
-    ];
+  const requirement = [
+    "tagged",
+    "event",
+    "requester",
+    "date",
+    "description",
+    "urgency"
+  ];
 
-    var passed = true;
-
-    for (var i = 0; i < requirement.length; i++) {
-      if (!(requirement[i] in body)) {
-        passed = false;
-        break;
-      }
-    }
-
-    if (!passed) {
-      res.status(400).send({
+  requirement.forEach(fieldName => {
+    if (!(fieldName in body)) {
+      return res.status(400).send({
         successful: false,
         result: "make sure all the correct fields are included in the json."
       });
-    } else {
-      nextSeqVal("requestid")
-        .then(seq_val => {
-          console.log("seq_val: ", seq_val);
-          var newData = {
-            _id: seq_val,
-            requester: body.requester,
-            event: body.event,
-            tagged: body.tagged,
-            date: body.date,
-            description: body.description,
-            timestamp: Math.floor(Date.now() / 1000),
-            urgency: body.urgency
-          };
-
-          console.log("new data parsed from body: ", newData);
-
-          var newRequest = new Request(newData);
-          newRequest.save((err, newRequest) => {
-            if (err) {
-              console.log("post error: ", err);
-              console.log("post not executed!");
-              res
-                .status(404)
-                .send({ successful: false, result: "Internal server error" });
-            } else {
-              console.log("Add to db! -> ", newRequest);
-
-              var resp = { successful: true, result: newData };
-
-              res.status(201).send(resp);
-
-              var users = Object.keys(body.tagged);
-              for (var j = 0; j < users.length; j++) {
-                notifyUser(users[j], newData)
-                  .then(succ => {
-                    if (!succ) {
-                      console.log("Notifying user not succ:", users[j]);
-                    }
-                  })
-                  .catch(err => {
-                    console.log("Notifying user err: ", err);
-                  });
-              }
-              notifyRequester(newData.requester, newData, "created")
-                .then(succ => {
-                  if (!succ) {
-                    console.log("Notifying requester not succ:", users[j]);
-                  }
-                })
-                .catch(err => {
-                  console.log("Notifying requester err: ", err);
-                });
-            }
-          });
-        })
-        .catch(err => {
-          console.log("seq error:", err);
-        });
     }
-  }
+  });
+
+  nextSeqVal("requestid")
+    .then(seq_val => {
+      console.log("seq_val: ", seq_val);
+      var newData = {
+        _id: seq_val,
+        requester: body.requester,
+        event: body.event,
+        tagged: body.tagged,
+        date: body.date,
+        description: body.description,
+        timestamp: Math.floor(Date.now() / 1000),
+        urgency: body.urgency
+      };
+
+      console.log("new data parsed from body: ", newData);
+
+      var newRequest = new Request(newData);
+
+      // TODO: promise chain
+      newRequest.save((err, newRequest) => {
+        if (err) {
+          console.log("post error: ", err);
+          console.log("post not executed!");
+          return res
+            .status(404)
+            .send({ successful: false, result: "Internal server error" });
+        }
+
+        console.log("Add to db! -> ", newRequest);
+
+        res.status(201).send({ successful: true, result: newData });
+
+        Object.keys(body.tagged).forEach(user => {
+          notifyUser(user, newData)
+            .then(succ => {
+              if (!succ) {
+                console.log("Notifying user not succ:", users[j]);
+              }
+            })
+            .catch(err => {
+              console.log("Notifying user err: ", err);
+            });
+        });
+
+        notifyRequester(newData.requester, newData, "created")
+          .then(succ => {
+            if (!succ) {
+              console.log("Notifying requester not succ:", users[j]);
+            }
+          })
+          .catch(err => {
+            console.log("Notifying requester err: ", err);
+          });
+      });
+    })
+    .catch(err => {
+      console.log("seq error:", err);
+    });
 });
 
 router.put("/:req_id", urlencodedParser, (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
     res
       .status(401)
