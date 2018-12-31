@@ -1,7 +1,6 @@
 {
-	"eslint.autoFixOnSave": true,
-	"eslint.alwaysShowStatus": true,
-	"prettier.printWidth": 100,
-	"prettier.tabWidth": 2,
-	"editor.formatOnSave": true
+  "eslint.autoFixOnSave": true,
+  "eslint.alwaysShowStatus": true,
+  "prettier.printWidth": 100,
+  "prettier.tabWidth": 2
 }
