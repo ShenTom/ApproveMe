@@ -248,179 +248,162 @@ router.put("/:req_id", urlencodedParser, (req, res) => {
 });
 
 router.delete("/:req_id", urlencodedParser, (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    Request.deleteOne({ _id: req.params.req_id }, (err, result) => {
-      if (err) {
-        console.log("delete error:", err);
-        console.log("delete not executed!");
-        res
+  }
+
+  Request.deleteOne({ _id: req.params.req_id }, (err, result) => {
+    return err
+      ? res
           .status(404)
-          .send({ successful: false, result: "Internal server error" });
-      } else {
-        res.status(200).send({
+          .send({ successful: false, result: "Internal server error" })
+      : res.status(200).send({
           successful: true,
           result: "The request with this request id has been removed."
         });
-      }
-    });
-  }
+  });
 });
 
 router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
+  res.header("Content-Type", "application/json");
+
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
-    res
+    return res
       .status(401)
       .send({ successful: false, result: "Wrong/no access key is given." });
-  } else {
-    console.log("action body: ", req.body);
-
-    let actions = ["approve", "decline", "sendNotification"];
-
-    let action = req.body.action;
-
-    let target = req.params.user_id;
-
-    let validAction = false;
-
-    if (actions.indexOf(action) != -1) {
-      validAction = true;
-    }
-
-    if (!validAction) {
-      res.status(400).send({
-        successful: false,
-        result:
-          "make sure the action is one of the following: approve, decline, & sendNotification."
-      });
-    } else {
-      let query = { _id: req.params.req_id };
-
-      Request.findOne(query, (err, result) => {
-        if (err) {
-          console.log("action error:", err);
-          console.log("action not executed!");
-          res
-            .status(404)
-            .send({ successful: false, result: "Internal server error" });
-        } else {
-          let tagged = result.tagged;
-
-          if (!(req.params.user_id in tagged)) {
-            res
-              .status(400)
-              .send({ successful: false, result: "Invalid user_id is given." });
-          } else {
-            if (action == "approve") {
-              if (tagged[target] == -1 || tagged[target] == 0) {
-                tagged[target] = 1;
-                Request.update(query, { tagged: tagged }, (err, raw) => {
-                  if (err) {
-                    console.log("action approve error:", err);
-                    console.log("action approve not executed!");
-                    res.status(404).send({
-                      successful: false,
-                      result: "Internal server error"
-                    });
-                  } else {
-                    result.tagged = tagged;
-                    res.status(200).send({ successful: true, result: result });
-
-                    var data = {
-                      event: result.event,
-                      resp: action,
-                      resp_id: target,
-                      date: result.date
-                    };
-                    notifyRequester(result.requester, data, "updated")
-                      .then(succ => {
-                        if (!succ) {
-                          console.log(
-                            "Notifying requester not succ:",
-                            result.requester
-                          );
-                        }
-                      })
-                      .catch(err => {
-                        console.log("Notifying requester err: ", err);
-                      });
-                  }
-                });
-              } else {
-                res.status(400).send({
-                  successful: false,
-                  result: "This user has approved this request already."
-                });
-              }
-            } else if (action == "decline") {
-              if (tagged[target] == 1 || tagged[target] == 0) {
-                tagged[target] = -1;
-                Request.update(query, { tagged: tagged }, (err, raw) => {
-                  if (err) {
-                    console.log("action decline error:", err);
-                    console.log("action decline not executed!");
-                    res.status(404).send({
-                      successful: false,
-                      result: "Internal server error"
-                    });
-                  } else {
-                    result.tagged = tagged;
-                    res.status(200).send({ successful: true, result: result });
-
-                    var data = {
-                      event: result.event,
-                      resp: action,
-                      resp_id: target,
-                      date: result.date
-                    };
-                    notifyRequester(result.requester, data, "updated")
-                      .then(succ => {
-                        if (!succ) {
-                          console.log(
-                            "Notifying requester not succ:",
-                            result.requester
-                          );
-                        }
-                      })
-                      .catch(err => {
-                        console.log("Notifying requester err: ", err);
-                      });
-                  }
-                });
-              } else {
-                res.status(400).send({
-                  successful: false,
-                  result: "This user has declined this request already."
-                });
-              }
-            } else if (action == "sendNotification") {
-              notifyUser(target, result)
-                .then(succ => {
-                  if (succ) {
-                    res.send({
-                      successful: true,
-                      message: "Notified the user!"
-                    });
-                  } else {
-                    console.log("notify user failed.");
-                    res.status(404).send({
-                      successful: false,
-                      result: "Internal server error"
-                    });
-                  }
-                })
-                .catch(err => {
-                  console.log("Notifying user err: ", err);
-                });
-            }
-          }
-        }
-      });
-    }
   }
+
+  console.log("action body: ", req.body);
+
+  const actions = ["approve", "decline", "sendNotification"];
+
+  let action = req.body.action;
+
+  const target = req.params.user_id;
+
+  if (actions.indexOf(action) == -1) {
+    return res.status(400).send({
+      successful: false,
+      result:
+        "make sure the action is one of the following: approve, decline, & sendNotification."
+    });
+  }
+
+  Request.findOne({ _id: req.params.req_id }, (err, result) => {
+    if (err) {
+      console.log("action error:", err);
+      console.log("action not executed!");
+      return res
+        .status(404)
+        .send({ successful: false, result: "Internal server error" });
+    }
+
+    let tagged = result.tagged;
+
+    if (!(req.params.user_id in tagged)) {
+      return res
+        .status(400)
+        .send({ successful: false, result: "Invalid user_id is given." });
+    }
+
+    if (action == "approve") {
+      if (tagged[target] == 1) {
+        return res.status(400).send({
+          successful: false,
+          result: "This user has approved this request already."
+        });
+      }
+
+      tagged[target] = 1;
+      Request.update(query, { tagged: tagged }, (err, raw) => {
+        if (err) {
+          console.log("action approve error:", err);
+          console.log("action approve not executed!");
+          return res.status(404).send({
+            successful: false,
+            result: "Internal server error"
+          });
+        }
+
+        result.tagged = tagged;
+        res.status(200).send({ successful: true, result: result });
+
+        var data = {
+          event: result.event,
+          resp: action,
+          resp_id: target,
+          date: result.date
+        };
+        notifyRequester(result.requester, data, "updated")
+          .then(succ => {
+            if (!succ) {
+              console.log("Notifying requester not succ:", result.requester);
+            }
+          })
+          .catch(err => {
+            console.log("Notifying requester err: ", err);
+          });
+      });
+    } else if (action == "decline") {
+      if (tagged[target] == -1) {
+        return res.status(400).send({
+          successful: false,
+          result: "This user has declined this request already."
+        });
+      }
+
+      tagged[target] = -1;
+      Request.update(query, { tagged: tagged }, (err, raw) => {
+        if (err) {
+          console.log("action decline error:", err);
+          console.log("action decline not executed!");
+          return res.status(404).send({
+            successful: false,
+            result: "Internal server error"
+          });
+        }
+
+        result.tagged = tagged;
+        res.status(200).send({ successful: true, result: result });
+
+        var data = {
+          event: result.event,
+          resp: action,
+          resp_id: target,
+          date: result.date
+        };
+        notifyRequester(result.requester, data, "updated")
+          .then(succ => {
+            if (!succ) {
+              console.log("Notifying requester not succ:", result.requester);
+            }
+          })
+          .catch(err => {
+            console.log("Notifying requester err: ", err);
+          });
+      });
+    } else if (action == "sendNotification") {
+      notifyUser(target, result)
+        .then(succ => {
+          return succ
+            ? res.send({
+                successful: true,
+                message: "Notified the user!"
+              })
+            : res.status(404).send({
+                successful: false,
+                result: "Internal server error"
+              });
+        })
+        .catch(err => {
+          console.log("Notifying user err: ", err);
+        });
+    }
+  });
 });
 
 module.exports.router = router;
