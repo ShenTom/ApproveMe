@@ -17,14 +17,14 @@ router.get("/", (req, res) => {
   if (req.headers["access-key"] !== process.env.ACCESS_KEY) {
     return res
       .status(401)
-      .send({ successful: false, result: "Wrong/ no access key is given." });
+      .send({ successful: false, result: "Wrong/no access key is given." });
   }
 
   Request.find((err, result) => {
     if (err) {
-      return res
-        .status(404)
-        .send({ successful: false, result: "Internal server error" });
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
     }
 
     const requests = {
@@ -70,10 +70,9 @@ router.get("/:req_id", (req, res) => {
 
   Request.findOne({ _id: req.params.req_id }, (err, result) => {
     if (err) {
-      console.log("error in get: ", err);
-      return res
-        .status(404)
-        .send({ successful: false, result: "Internal server error" });
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
     }
 
     return result
@@ -96,10 +95,9 @@ router.get("/users/:user_id", (req, res) => {
 
   Request.find((err, result) => {
     if (err) {
-      console.log("error in get with id: ", err);
-      return res
-        .status(404)
-        .send({ successful: false, result: "Internal server error" });
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
     }
 
     const target = req.params.user_id;
@@ -168,11 +166,9 @@ router.post("/", urlencodedParser, (req, res) => {
       // TODO: promise chain
       newRequest.save((err, newRequest) => {
         if (err) {
-          console.log("post error: ", err);
-          console.log("post not executed!");
-          return res
-            .status(404)
-            .send({ successful: false, result: "Internal server error" });
+          const error = "Internal server error: " + err;
+
+          return res.status(404).send({ successful: false, result: error });
         }
 
         console.log("Add to db! -> ", newRequest);
@@ -236,11 +232,13 @@ router.put("/:req_id", urlencodedParser, (req, res) => {
   console.log("new data parsed from body: ", update);
 
   Request.update(query, update, (err, raw) => {
-    return err
-      ? res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" })
-      : res.status(200).send({ successful: true, result: update });
+    if (err) {
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
+    }
+
+    return res.status(200).send({ successful: true, result: update });
   });
 });
 
@@ -254,14 +252,16 @@ router.delete("/:req_id", urlencodedParser, (req, res) => {
   }
 
   Request.deleteOne({ _id: req.params.req_id }, (err, result) => {
-    return err
-      ? res
-          .status(404)
-          .send({ successful: false, result: "Internal server error" })
-      : res.status(200).send({
-          successful: true,
-          result: "The request with this request id has been removed."
-        });
+    if (err) {
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
+    }
+
+    return res.status(200).send({
+      successful: true,
+      result: "The request with this request id has been removed."
+    });
   });
 });
 
@@ -292,11 +292,9 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
 
   Request.findOne({ _id: req.params.req_id }, (err, result) => {
     if (err) {
-      console.log("action error:", err);
-      console.log("action not executed!");
-      return res
-        .status(404)
-        .send({ successful: false, result: "Internal server error" });
+      const error = "Internal server error: " + err;
+
+      return res.status(404).send({ successful: false, result: error });
     }
 
     let tagged = result.tagged;
@@ -318,12 +316,9 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
       tagged[target] = 1;
       Request.update(query, { tagged: tagged }, (err, raw) => {
         if (err) {
-          console.log("action approve error:", err);
-          console.log("action approve not executed!");
-          return res.status(404).send({
-            successful: false,
-            result: "Internal server error"
-          });
+          const error = "Internal server error: " + err;
+
+          return res.status(404).send({ successful: false, result: error });
         }
 
         result.tagged = tagged;
@@ -356,12 +351,9 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
       tagged[target] = -1;
       Request.update(query, { tagged: tagged }, (err, raw) => {
         if (err) {
-          console.log("action decline error:", err);
-          console.log("action decline not executed!");
-          return res.status(404).send({
-            successful: false,
-            result: "Internal server error"
-          });
+          const error = "Internal server error: " + err;
+
+          return res.status(404).send({ successful: false, result: error });
         }
 
         result.tagged = tagged;
