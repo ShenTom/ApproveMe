@@ -1,24 +1,25 @@
-var sendMessage = require("./sendMessage");
-var slack = require("slack");
-var request = require("request");
-var listBuilder = require("../libraries/listBuilder");
+const slack = require("slack");
+const request = require("request");
+const sendMessage = require("./sendMessage");
+const listBuilder = require("./listBuilder");
 
-const commands = function(reqBody, command) {
-  var instruction =
-    "Use the following commands:\n `/approve [Tag users in your current channel]` - to send a new request to tagged users for approval.\n `/approve list` - to see a list of your requests.\n `/approve help` - to see this instruction again!";
-
+const commands = ({ reqBody, command }) => {
   //send help
   if (command == "help") {
-    var msg = {
+    const instruction =
+      "Use the following commands:\n `/approve [Tag users in your current channel]` - to send a new request to tagged users for approval.\n `/approve list` - to see a list of your requests.\n `/approve help` - to see this instruction again!";
+
+    const msg = {
       response_type: "ephemeral",
       text: instruction
     };
-    sendMessage(reqBody.response_url, msg);
+
+    sendMessage({ url: reqBody.response_url, msg });
 
     //send list
   } else if (command == "list") {
-    var url = process.env.API_URL + "users/" + reqBody.user_id;
-    var options = {
+    const url = process.env.API_URL + "users/" + reqBody.user_id;
+    const options = {
       uri: url,
       method: "GET",
       headers: {
@@ -27,12 +28,12 @@ const commands = function(reqBody, command) {
     };
 
     request(options, (err, resp, body) => {
-      var data = JSON.parse(body);
+      const data = JSON.parse(body);
 
       if (err || !data.successful) {
         console.log("fetching from requests api failed...");
       } else {
-        var msg = listBuilder(data.result);
+        var msg = listBuilder({ info: data.result });
 
         //need to figure out how to represent each request...
         //maybe just top 3 and link htem to the interface?
@@ -40,18 +41,11 @@ const commands = function(reqBody, command) {
         //add notify api!!
         //open request: notify button, closed request: result
 
-        sendMessage(reqBody.response_url, msg);
+        sendMessage({ url: reqBody.response_url, msg });
       }
     });
   } else if (command == "request") {
-    var blocks = reqBody.text.trim().split(" ");
-
-    console.log(blocks);
-
-    var list = "";
-    for (var j = 0; j < blocks.length; j++) {
-      list += blocks[j] + " ";
-    }
+    const list = reqBody.text.trim();
 
     //open dialog
 
