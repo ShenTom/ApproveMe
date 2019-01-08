@@ -1,6 +1,6 @@
-var request = require("request");
+const request = require("request");
 
-const sendMessage = function(url, msg) {
+const sendMessage = ({ url, msg }) => {
   var postOptions = {
     uri: url,
     method: "POST",
