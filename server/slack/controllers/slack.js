@@ -1,27 +1,26 @@
-var express = require("express");
-var router = express.Router();
-var request = require("request");
-var bodyParser = require("body-parser");
-var slack = require("slack");
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
-var sendMessage = require("../libraries/sendMessage");
-var commands = require("../libraries/commands");
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const commands = require("../libraries/commands");
 
 router.post("/", urlencodedParser, (req, res) => {
   if (req.body.token != process.env.ATOKEN) {
     res.status(403).end("Access forbidden");
   } else {
-    var reqBody = req.body;
+    res.status(200).end();
+
+    const reqBody = req.body;
     console.log("slack post body:", reqBody);
 
-    var text = reqBody.text;
+    const { text } = reqBody;
 
-    var command = "";
+    let command;
 
     if (text == "") {
       command = "help";
     } else {
-      var trimmed = text.trim();
+      let trimmed = text.trim();
 
       if (trimmed == "help") {
         command = "help";
@@ -38,9 +37,7 @@ router.post("/", urlencodedParser, (req, res) => {
 
     console.log("command: ", command);
 
-    res.status(200).end();
-
-    commands(reqBody, command);
+    commands({ reqBody, command });
   }
 });
 
