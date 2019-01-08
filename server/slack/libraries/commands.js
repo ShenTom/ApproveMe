@@ -1,7 +1,7 @@
 const slack = require("slack");
 const request = require("request");
 const sendMessage = require("./sendMessage");
-const listBuilder = require("./listBuilder");
+const { listBuilder } = require("./utilities");
 
 const commands = ({ reqBody, command }) => {
   //send help
