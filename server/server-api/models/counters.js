@@ -1,9 +1,9 @@
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
 //Define a schema
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var CounterSchema = new Schema({
+const CounterSchema = new Schema({
   _id: String,
   seq_val: Number
 });
