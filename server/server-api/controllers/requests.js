@@ -4,9 +4,12 @@ const bodyParser = require("body-parser");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
-const notifyUser = require("../libraries/notifyUser");
 const nextSeqVal = require("../libraries/nextSeqVal");
-const notifyRequester = require("../libraries/notifyRequester");
+const {
+  notifyRequesterUpdated,
+  notifyRequesterCreated,
+  notifyUser
+} = require("../libraries/notifyFunctions");
 mongoose.connect(process.env.DB_LOGIN);
 
 const Request = require("../models/requests.js");
@@ -170,7 +173,7 @@ router.post("/", urlencodedParser, (req, res) => {
       res.status(201).send({ successful: true, result: newRequest });
 
       Object.keys(body.tagged).forEach(user => {
-        notifyUser(user, newRequest)
+        notifyUser({ userId: user, data: newRequest })
           .then(succ => {
             if (!succ) {
               console.log("Notifying user not succ:", user);
@@ -181,7 +184,7 @@ router.post("/", urlencodedParser, (req, res) => {
           });
       });
 
-      notifyRequester(newRequest.requester, newRequest, "created")
+      notifyRequesterCreated({ userId: newRequest.requester, data: newRequest })
         .then(succ => {
           if (!succ) {
             console.log("Notifying requester not succ");
@@ -329,7 +332,7 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
           resp_id: target,
           date: result.date
         };
-        notifyRequester(result.requester, data, "updated")
+        notifyRequesterUpdated({ userId: result.requester, data })
           .then(succ => {
             if (!succ) {
               console.log("Notifying requester not succ:", result.requester);
@@ -364,7 +367,7 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
           resp_id: target,
           date: result.date
         };
-        notifyRequester(result.requester, data, "updated")
+        notifyRequesterUpdated({ userId: result.requester, data })
           .then(succ => {
             if (!succ) {
               console.log("Notifying requester not succ:", result.requester);
@@ -375,7 +378,7 @@ router.post("/:req_id/users/:user_id", urlencodedParser, (req, res) => {
           });
       });
     } else if (action == "sendNotification") {
-      notifyUser(target, result)
+      notifyUser({ userId: target, data: result })
         .then(succ => {
           return succ
             ? res.send({
