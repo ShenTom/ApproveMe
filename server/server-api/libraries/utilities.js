@@ -4,15 +4,7 @@ const roomOpener = ({ userId }) => {
   return new Promise((resolve, reject) => {
     slack.im
       .open({ token: process.env.BTOKEN, user: userId })
-      .then(room => {
-        console.log("Open room: ", room);
-
-        if (room.okay == false) {
-          console.log("invalid username...");
-          return reject("invalid username");
-        }
-        resolve(room.channel.id);
-      })
+      .then(resolve)
       .catch(reject);
   });
 };
