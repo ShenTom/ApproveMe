@@ -136,14 +136,14 @@ router.post("/", urlencodedParser, (req, res) => {
     "urgency"
   ];
 
-  requirement.forEach(fieldName => {
-    if (!(fieldName in body)) {
+  for (let i = 0; i < requirement.length; i++) {
+    if (!(requirement[i] in body)) {
       return res.status(400).send({
         successful: false,
         result: "make sure all the correct fields are included in the json."
       });
     }
-  });
+  }
 
   nextSeqVal("requestid")
     .then(seq_val => {
