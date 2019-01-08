@@ -1,14 +1,15 @@
-const listBuilder = function(result) {
+const listBuilder = ({ info }) => {
   let msg = {
     response_type: "ephemeral",
-    text: "Here are your 2 latest requests!",
+    text: "Here are your latest request and your latest tagged request!",
     attachments: []
   };
 
   for (let i = 0; i < 2; i++) {
     let data;
     if (i == 0) {
-      data = result.requested[result.requested.length - 1];
+      data = info.requested[info.requested.length - 1];
+
       console.log("testing:", data);
       msg.attachments.push({
         text: "Latest requested:",
@@ -16,7 +17,8 @@ const listBuilder = function(result) {
         attachment_type: "default"
       });
     } else if (i == 1) {
-      data = result.tagged[result.tagged.length - 1];
+      data = info.tagged[info.tagged.length - 1];
+
       msg.attachments.push({
         text: "Latest tagged:",
         color: "#3AA3E3",
