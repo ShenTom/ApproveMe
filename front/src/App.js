@@ -1,14 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Switch, Route, Link } from "react-router-dom";
-
-const LoginPage = () => {
-  return (
-    <div>
-      <p>Login Page</p>
-    </div>
-  );
-};
+import LoginPage from "./scenes/LoginPage/LoginPage";
 
 const Home = () => {
   return (
