@@ -104,7 +104,8 @@ const notifyRequesterCreated = ({ userId, data }) => {
                   title: "Description",
                   value: data.description
                 }
-              ],
+              ]
+              /* HIDE NUDGE FEATURE
               actions: [
                 {
                   name: "nudge",
@@ -120,6 +121,7 @@ const notifyRequesterCreated = ({ userId, data }) => {
                   }
                 }
               ]
+              */
             }
           ];
 

@@ -43,18 +43,21 @@ router.post("/", urlencodedParser, (req, res) => {
 
     console.log("people: ", obj);
 
-    //                     if (payload.submission.comments) {
-    //                         var comments = payload.submission.comments
-    //                         var object = {};
-    //                         object[payload.user.id] = comments
-    //                         var time = Math.floor(Date.now() / 1000)
-    //                         time = time.toString();
-    //                         var temp = {}
-    //                         temp[time] = object;
-    //                     }
+    /* HIDE COMMENT FEATURE
 
-    //                     console.log("object: ", object)
-    //                     console.log("time: ", temp)
+    if (payload.submission.comments) {
+      var comments = payload.submission.comments;
+      var object = {};
+      object[payload.user.id] = comments;
+      var time = Math.floor(Date.now() / 1000);
+      time = time.toString();
+      var temp = {};
+      temp[time] = object;
+    }
+
+    console.log("object: ", object);
+    console.log("time: ", temp);
+    */
 
     var urgency = parseInt(payload.submission.urgency);
 
@@ -90,6 +93,9 @@ router.post("/", urlencodedParser, (req, res) => {
         console.log("POST new request successfully");
       }
     });
+
+    /* HIDE NUDGE FEATURE
+    
   } else if (payload.callback_id == "requester") {
     console.log("Requester Payload: ", payload);
 
@@ -156,6 +162,7 @@ router.post("/", urlencodedParser, (req, res) => {
         });
       }
     });
+  */
   } else if (payload.callback_id === "approve/decline") {
     console.log("Approve/decline Payload: ", payload);
 
