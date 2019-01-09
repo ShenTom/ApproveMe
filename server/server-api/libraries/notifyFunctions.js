@@ -208,7 +208,7 @@ const notifyUser = ({ userId, data }) => {
                 text: "Approve",
                 style: "primary",
                 type: "button",
-                value: data.event,
+                value: data._id,
                 confirm: {
                   title: "Confirm",
                   text: "Approving this event?",
@@ -221,7 +221,7 @@ const notifyUser = ({ userId, data }) => {
                 text: "Decline",
                 style: "danger",
                 type: "button",
-                value: data.event,
+                value: data._id,
                 confirm: {
                   title: "Confirm",
                   text: "Declining this event?",

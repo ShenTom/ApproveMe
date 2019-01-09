@@ -159,13 +159,13 @@ router.post("/", urlencodedParser, (req, res) => {
   } else if (payload.callback_id === "approve/decline") {
     console.log("Approve/decline Payload: ", payload);
 
-    var url =
+    let url =
       process.env.API_URL +
       payload.actions[0].value +
       "/users/" +
       payload.user.id;
 
-    var options = {
+    let options = {
       uri: url,
       method: "POST",
       headers: {
