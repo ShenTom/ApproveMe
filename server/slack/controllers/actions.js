@@ -36,7 +36,10 @@ router.post("/", urlencodedParser, (req, res) => {
 
     res.status(200).end();
 
-    const data = parseTags({ string: payload.submission.tagged });
+    const data = parseTags({
+      tagged: payload.submission.tagged,
+      requester: payload.user.id
+    });
     const obj = data.reduce((names, currName) => {
       names[currName] = 0;
       return names;
