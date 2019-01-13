@@ -7,7 +7,7 @@ const commands = ({ reqBody, command }) => {
   //send help
   if (command == "help") {
     const instruction =
-      "Use the following commands:\n `/approve [Tag users in your current channel]` - to send a new request to tagged users for approval.\n `/approve list` - to see a list of your requests.\n `/approve help` - to see this instruction again!";
+      "Use the following commands:\n `/approve request` - to send a new request to a user for approval.\n `/approve list` - to see a list of your requests.\n `/approve help` - to see this instruction again!";
 
     const msg = {
       response_type: "ephemeral",
