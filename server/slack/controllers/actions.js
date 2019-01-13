@@ -80,9 +80,6 @@ router.post("/", urlencodedParser, (req, res) => {
       date: moment(payload.submission.date)
         .utc()
         .valueOf(),
-      createdAt: moment()
-        .utc()
-        .valueOf(),
       description: payload.submission.description,
       urgency: urgency
     };
