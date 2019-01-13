@@ -1,12 +1,15 @@
-const parseTags = ({ string }) => {
-  const result = string.split(" ").reduce((accum, curString) => {
-    let end = curString.indexOf("|");
+const boardMember = ["U79456HA5"];
 
-    if (end != -1) {
-      accum.push(curString.slice(2, end));
+const parseTags = ({ tagged, requester }) => {
+  const result = [tagged];
+
+  for (let index = 0; index < boardMember.length; index++) {
+    let member = boardMember[index];
+
+    if (member !== tagged && member !== requester) {
+      result.push(member);
     }
-    return accum;
-  }, []);
+  }
 
   console.log("User IDs: ", result);
 
