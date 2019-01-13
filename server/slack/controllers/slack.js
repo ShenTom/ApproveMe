@@ -15,29 +15,24 @@ router.post("/", urlencodedParser, (req, res) => {
 
     const { text } = reqBody;
 
-    let command;
-
-    if (text == "") {
-      command = "help";
-    } else {
-      let trimmed = text.trim();
-
-      if (trimmed == "help") {
-        command = "help";
-      } else if (trimmed == "list") {
-        command = "list";
-      } else {
-        // var blocks = trimmed.split(" ");
-        command = "request";
+    switch (text) {
+      case "list": {
+        commands({ reqBody, command: "list" });
+        return;
+      }
+      case "request": {
+        commands({ reqBody, command: "request" });
+        return;
+      }
+      case "help": {
+        commands({ reqBody, command: "help" });
+        return;
+      }
+      default: {
+        commands({ reqBody, command: "help" });
+        return;
       }
     }
-
-    // Do username check to see if it is in the channel
-    //send error that the tagged ppl are not in the channel (wip..)
-
-    console.log("command: ", command);
-
-    commands({ reqBody, command });
   }
 });
 
