@@ -36,7 +36,10 @@ const notifyRequesterUpdated = ({ userId, data }) => {
         ];
 
         return slack.chat.postMessage({
-          token: process.env.BTOKEN,
+          token:
+            process.env.ENV === "development"
+              ? process.env.DEV_BTOKEN
+              : process.env.PROD_BTOKEN,
           channel: channel_id,
           text: "",
           attachments: attachments
@@ -126,7 +129,10 @@ const notifyRequesterCreated = ({ userId, data }) => {
           ];
 
           return slack.chat.postMessage({
-            token: process.env.BTOKEN,
+            token:
+              process.env.ENV === "development"
+                ? process.env.DEV_BTOKEN
+                : process.env.PROD_BTOKEN,
             channel: channel_id,
             text: "",
             attachments: attachments
@@ -236,7 +242,10 @@ const notifyUser = ({ userId, data }) => {
         ];
 
         return slack.chat.postMessage({
-          token: process.env.BTOKEN,
+          token:
+            process.env.ENV === "development"
+              ? process.env.DEV_BTOKEN
+              : process.env.PROD_BTOKEN,
           channel: channel_id,
           text: "",
           attachments: attachments
