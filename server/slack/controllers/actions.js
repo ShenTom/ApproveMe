@@ -14,7 +14,12 @@ router.get("/", function(req, res) {
 router.post("/", urlencodedParser, (req, res) => {
   var payload = JSON.parse(req.body.payload); // parse URL-encoded payload JSON string
 
-  if (payload.token !== process.env.ATOKEN) {
+  const a_token =
+    process.env.ENV === "development"
+      ? process.env.DEV_ATOKEN
+      : process.env.PROD_ATOKEN;
+
+  if (payload.token !== a_token) {
     return res.sendStatus(500);
   }
 
@@ -164,7 +169,9 @@ router.post("/", urlencodedParser, (req, res) => {
           }
         ];
         slack.chat.postMessage({
-          token: process.env.BTOKEN,
+          token: process.env.ENV === "development"
+              ? process.env.DEV_BTOKEN
+              : process.env.PROD_BTOKEN,
           channel: payload.channel.id,
           text: "",
           attachments: msg
@@ -212,7 +219,10 @@ router.post("/", urlencodedParser, (req, res) => {
           }
         ];
         slack.chat.update({
-          token: process.env.BTOKEN,
+          token:
+            process.env.ENV === "development"
+              ? process.env.DEV_BTOKEN
+              : process.env.PROD_BTOKEN,
           channel: payload.channel.id,
           text: "",
           ts: payload.message_ts,
