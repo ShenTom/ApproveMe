@@ -1,33 +1,15 @@
 const parseTags = ({ string }) => {
-  //need update... user string is now with userID
+  const result = string.split(" ").reduce((accum, curString) => {
+    let end = curString.indexOf("|");
 
-  const result = string.split(" ").map(user => {
-    var end = user.indexOf("|");
-    return user.slice(2, end);
-  });
+    if (end != -1) {
+      accum.push(curString.slice(2, end));
+    }
+    return accum;
+  }, []);
 
   console.log("User IDs: ", result);
 
-  return result;
-};
-
-const parseDate = string => {
-  var result = true;
-  var arr = string.trim().split("-");
-
-  console.log("date", arr);
-
-  if (arr.length != 3) {
-    result = false;
-  } else if (arr[0].length != 2 || arr[1].length != 2 || arr[2].length != 4) {
-    result = false;
-  } else if (
-    isNaN(parseInt(arr[0])) == true ||
-    isNaN(parseInt(arr[1])) == true ||
-    isNaN(parseInt(arr[2])) == true
-  ) {
-    result = false;
-  }
   return result;
 };
 
@@ -112,4 +94,4 @@ const listBuilder = ({ info }) => {
   return msg;
 };
 
-module.exports = { parseTags, parseDate, listBuilder };
+module.exports = { parseTags, listBuilder };
