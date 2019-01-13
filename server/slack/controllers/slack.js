@@ -5,7 +5,12 @@ const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const commands = require("../libraries/commands");
 
 router.post("/", urlencodedParser, (req, res) => {
-  if (req.body.token != process.env.ATOKEN) {
+  const a_token =
+    process.env.ENV === "development"
+      ? process.env.DEV_ATOKEN
+      : process.env.PROD_ATOKEN;
+
+  if (req.body.token != a_token) {
     res.status(403).end("Access forbidden");
   } else {
     res.status(200).end();

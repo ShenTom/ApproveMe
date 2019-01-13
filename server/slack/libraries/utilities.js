@@ -1,4 +1,4 @@
-const boardMember = ["U79456HA5"];
+const boardMember = ["U79456HA5", "UC77Z97SL"];
 
 const parseTags = ({ tagged, requester }) => {
   const result = [tagged];

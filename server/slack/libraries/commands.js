@@ -64,7 +64,7 @@ const commands = ({ reqBody, command }) => {
           placeholder: "year-month-day (ex. 2019-03-18)"
         },
         {
-          label: "Tagged",
+          label: "Tag a User",
           type: "select",
           name: "tagged",
           data_source: "users"
@@ -89,7 +89,10 @@ const commands = ({ reqBody, command }) => {
 
     slack.dialog
       .open({
-        token: process.env.OTOKEN,
+        token:
+          process.env.ENV === "development"
+            ? process.env.DEV_OTOKEN
+            : process.env.PROD_OTOKEN,
         dialog: dial,
         trigger_id: reqBody.trigger_id
       })
