@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const moment = require("moment");
 const request = require("request");
 const bodyParser = require("body-parser");
 const slack = require("slack");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const { parseTags, parseDate } = require("../libraries/utilities");
+const { parseTags } = require("../libraries/utilities");
 
 router.get("/", function(req, res) {
   res.send("actions");
@@ -20,7 +21,7 @@ router.post("/", urlencodedParser, (req, res) => {
   if (payload.callback_id === "requestDialog") {
     console.log("Payload: ", payload);
 
-    if (parseDate(payload.submission.date) == false) {
+    if (!moment(payload.submission.date).isValid()) {
       console.log("The date format is incorrect.");
 
       return res.status(401).send({
@@ -68,7 +69,12 @@ router.post("/", urlencodedParser, (req, res) => {
       event: payload.submission.name,
       channel: payload.channel.id,
       tagged: obj,
-      date: payload.submission.date,
+      date: moment(payload.submission.date)
+        .utc()
+        .valueOf(),
+      createdAt: moment()
+        .utc()
+        .valueOf(),
       description: payload.submission.description,
       urgency: urgency
     };
@@ -95,7 +101,7 @@ router.post("/", urlencodedParser, (req, res) => {
     });
 
     /* HIDE NUDGE FEATURE
-    
+
   } else if (payload.callback_id == "requester") {
     console.log("Requester Payload: ", payload);
 
