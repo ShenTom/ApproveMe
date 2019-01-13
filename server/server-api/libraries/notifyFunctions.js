@@ -1,4 +1,5 @@
 const slack = require("slack");
+const moment = require("moment");
 const { roomOpener, userQuery } = require("./utilities");
 
 //im.open + chat.postMessage
@@ -67,7 +68,7 @@ const notifyRequesterCreated = ({ userId, data }) => {
       ])
         .then(([channel_id, requester]) => {
           var txt1 = "New Request: " + data.event;
-          var txt2 = "You have requested the event- " + data.event + ".";
+          // var txt2 = "You have requested the event- " + data.event + ".";
 
           var urgency = "High";
 
@@ -80,7 +81,7 @@ const notifyRequesterCreated = ({ userId, data }) => {
           var attachments = [
             {
               title: txt1,
-              text: txt2,
+              // text: txt2,
               callback_id: "requester",
               color: "#3AA3E3",
               attachment_type: "default",
@@ -96,8 +97,16 @@ const notifyRequesterCreated = ({ userId, data }) => {
                   short: true
                 },
                 {
+                  title: "Created At",
+                  value: moment(data.timestamp).format(
+                    "dddd, MMM Do YYYY, h:mm a"
+                  ),
+                  short: true
+                },
+                {
                   title: "Date",
-                  value: data.date
+                  value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
+                  short: true
                 },
                 {
                   title: "Urgency",
@@ -198,8 +207,16 @@ const notifyUser = ({ userId, data }) => {
                 short: true
               },
               {
+                title: "Created At",
+                value: moment(data.timestamp).format(
+                  "dddd, MMM Do YYYY, h:mm a"
+                ),
+                short: true
+              },
+              {
                 title: "Date",
-                value: data.date
+                value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
+                short: true
               },
               {
                 title: "Urgency",

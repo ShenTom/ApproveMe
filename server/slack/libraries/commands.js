@@ -61,7 +61,7 @@ const commands = ({ reqBody, command }) => {
           type: "text",
           label: "Date",
           name: "date",
-          placeholder: "year-month-day (ex. 2019-03-18)"
+          placeholder: "year-month-day 24hour:min (ex. 2019-03-18 16:00)"
         },
         {
           label: "Tag a User",
