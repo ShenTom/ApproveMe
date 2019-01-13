@@ -157,7 +157,7 @@ router.post("/", urlencodedParser, (req, res) => {
         tagged: body.tagged,
         date: body.date,
         description: body.description,
-        timestamp: Math.floor(Date.now() / 1000),
+        timestamp: Math.floor(Date.now()),
         urgency: body.urgency
       };
 
