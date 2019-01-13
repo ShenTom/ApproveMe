@@ -45,8 +45,6 @@ const commands = ({ reqBody, command }) => {
       }
     });
   } else if (command == "request") {
-    const list = reqBody.text.trim();
-
     //open dialog
 
     const dial = {
@@ -63,14 +61,13 @@ const commands = ({ reqBody, command }) => {
           type: "text",
           label: "Date",
           name: "date",
-          placeholder: "month-day-year (ex. 03-18-2018)"
+          placeholder: "year-month-day (ex. 2019-03-18)"
         },
         {
           label: "Tagged",
-          type: "text",
+          type: "select",
           name: "tagged",
-          placeholder: list,
-          value: list
+          data_source: "users"
         },
         {
           label: "Urgency",
