@@ -49,17 +49,17 @@ const commands = ({ reqBody, command }) => {
 
     const dial = {
       callback_id: "requestDialog",
-      title: "Request a New Approval",
+      title: "Request a New Event",
       submit_label: "Request",
       elements: [
         {
           type: "text",
-          label: "Name",
+          label: "Event Name",
           name: "name"
         },
         {
           type: "text",
-          label: "Date",
+          label: "Event Date",
           name: "date",
           placeholder: "year-month-day 24hour:min (ex. 2019-03-18 16:00)"
         },
