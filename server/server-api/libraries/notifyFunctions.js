@@ -92,11 +92,6 @@ const notifyRequesterCreated = ({ userId, data }) => {
                   short: true
                 },
                 {
-                  title: "Event",
-                  value: data.event,
-                  short: true
-                },
-                {
                   title: "Created At",
                   value: moment(data.timestamp).format(
                     "dddd, MMM Do YYYY, h:mm a"
@@ -104,7 +99,13 @@ const notifyRequesterCreated = ({ userId, data }) => {
                   short: true
                 },
                 {
-                  title: "Date",
+                  title: "Event",
+                  value: data.event,
+                  short: true
+                },
+
+                {
+                  title: "Event Date",
                   value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
                   short: true
                 },
