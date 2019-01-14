@@ -21,7 +21,12 @@ const notifyRequesterUpdated = ({ userId, data }) => {
         ]);
       })
       .then(([channel_id, tagged]) => {
-        var title = "Update: " + data.event + "  (" + data.date + ")";
+        var title =
+          "Update: " +
+          data.event +
+          "  (" +
+          moment(data.date).format("dddd, MMM Do YYYY, h:mm a") +
+          ")";
         var text =
           tagged.user.profile.real_name +
           " has " +
