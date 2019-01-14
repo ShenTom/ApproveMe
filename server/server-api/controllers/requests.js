@@ -10,7 +10,9 @@ const {
   notifyRequesterCreated,
   notifyUser
 } = require("../libraries/notifyFunctions");
-mongoose.connect(process.env.DB_LOGIN);
+mongoose.connect(
+  process.env.ENV === "development" ? process.env.DEV_DB : process.env.PROD_DB
+);
 
 const Request = require("../models/requests.js");
 

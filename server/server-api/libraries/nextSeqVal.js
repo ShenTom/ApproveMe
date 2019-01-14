@@ -1,6 +1,8 @@
 const MongoClient = require("mongodb").MongoClient;
 const mongoose = require("mongoose");
-mongoose.connect(process.env.DB_LOGIN);
+mongoose.connect(
+  process.env.ENV === "development" ? process.env.DEV_DB : process.env.PROD_DB
+);
 
 const Counter = require("../models/counters.js");
 

@@ -1,6 +1,8 @@
 const MongoClient = require("mongodb").MongoClient;
 var mongoose = require("mongoose");
-mongoose.connect(process.env.DB_LOGIN);
+mongoose.connect(
+  process.env.ENV === "development" ? process.env.DEV_DB : process.env.PROD_DB
+);
 
 var Counter = require("./models/counters.js");
 var Request = require("./models/requests.js");
@@ -47,17 +49,23 @@ const addNewRequest = function() {
 };
 
 const restartDB = function(num) {
-  mongoose.connect(process.env.DB_LOGIN).dropDatabase(() => {
-    for (let i = 0; i < num; i++) {
-      addNewRequest()
-        .then(result => {
-          console.log("Added: ", result);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  });
+  mongoose
+    .connect(
+      process.env.ENV === "development"
+        ? process.env.DEV_DB
+        : process.env.PROD_DB
+    )
+    .dropDatabase(() => {
+      for (let i = 0; i < num; i++) {
+        addNewRequest()
+          .then(result => {
+            console.log("Added: ", result);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    });
 };
 
 restartDB(15);
