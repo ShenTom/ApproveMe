@@ -63,7 +63,7 @@ const listBuilder = ({ info }) => {
         attachment_type: "default",
         fields: [
           {
-            title: "Date",
+            title: "Event Date",
             value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
             short: true
           },
@@ -71,6 +71,10 @@ const listBuilder = ({ info }) => {
             title: "Urgency",
             value: urgency,
             short: true
+          },
+          {
+            title: "Created At",
+            value: moment(data.timestamp).format("dddd, MMM Do YYYY, h:mm a")
           },
           {
             title: "Description",
@@ -91,7 +95,7 @@ const listBuilder = ({ info }) => {
 
   msg.attachments.push({
     text:
-      "To approve/decline a request or to nudge an user, please go to the approveMe bot page. \n To start a new request, please use the `/approve [Tag users in your current channel]` command.",
+      "To approve/decline a request, please go to the approveMe bot page. \n To start a new request, please use the `/approve request` command.",
     color: "#3AA3E3",
     attachment_type: "default"
   });
