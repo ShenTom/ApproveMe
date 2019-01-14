@@ -18,6 +18,20 @@ const parseTags = ({ tagged, requester }) => {
   return result;
 };
 
+const timeConversion = ({ dateObj }) =>
+  dateObj.toLocaleString("en-GB", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZoneName: "short",
+    hour: "numeric",
+    minute: "numeric",
+    time: "numeric",
+    timeZone: "America/Vancouver",
+    hour12: false
+  });
+
 const listBuilder = ({ info }) => {
   let msg = {
     response_type: "ephemeral",
@@ -57,6 +71,9 @@ const listBuilder = ({ info }) => {
 
       let txt = "Event: " + data.event;
 
+      let eventDate = new Date(data.date);
+      let createDate = new Date(data.timestamp);
+
       let object = {
         title: txt,
         color: "#3AA3E3",
@@ -64,7 +81,7 @@ const listBuilder = ({ info }) => {
         fields: [
           {
             title: "Event Date",
-            value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
+            value: timeConversion({ dateObj: eventDate }),
             short: true
           },
           {
@@ -74,7 +91,7 @@ const listBuilder = ({ info }) => {
           },
           {
             title: "Created At",
-            value: moment(data.timestamp).format("dddd, MMM Do YYYY, h:mm a")
+            value: timeConversion({ dateObj: createDate })
           },
           {
             title: "Description",
