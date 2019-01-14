@@ -1,6 +1,6 @@
 const slack = require("slack");
 const moment = require("moment");
-const { roomOpener, userQuery } = require("./utilities");
+const { roomOpener, userQuery, timeConversion } = require("./utilities");
 
 //im.open + chat.postMessage
 //a msg telling the requester that the request has been sent + nudge option
@@ -21,11 +21,13 @@ const notifyRequesterUpdated = ({ userId, data }) => {
         ]);
       })
       .then(([channel_id, tagged]) => {
+        let eventDate = new Date(data.date);
+
         var title =
           "Update: " +
           data.event +
           "  (" +
-          moment(data.date).format("dddd, MMM Do YYYY, h:mm a") +
+          timeConversion({ dateObj: eventDate }) +
           ")";
         var text =
           tagged.user.profile.real_name +
@@ -83,6 +85,9 @@ const notifyRequesterCreated = ({ userId, data }) => {
             urgency = "Low";
           }
 
+          let eventDate = new Date(data.date);
+          let createDate = new Date(data.timestamp);
+
           var attachments = [
             {
               title: txt1,
@@ -98,9 +103,7 @@ const notifyRequesterCreated = ({ userId, data }) => {
                 },
                 {
                   title: "Created At",
-                  value: moment(data.timestamp).format(
-                    "dddd, MMM Do YYYY, h:mm a"
-                  ),
+                  value: timeConversion({ dateObj: createDate }),
                   short: true
                 },
                 {
@@ -111,7 +114,7 @@ const notifyRequesterCreated = ({ userId, data }) => {
 
                 {
                   title: "Event Date",
-                  value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
+                  value: timeConversion({ dateObj: eventDate }),
                   short: true
                 },
                 {
@@ -194,6 +197,9 @@ const notifyUser = ({ userId, data }) => {
           urgency = "Low";
         }
 
+        let eventDate = new Date(data.date);
+        let createDate = new Date(data.timestamp);
+
         var attachments = [
           {
             title: txt1,
@@ -208,20 +214,18 @@ const notifyUser = ({ userId, data }) => {
                 short: true
               },
               {
+                title: "Created At",
+                value: timeConversion({ dateObj: createDate }),
+                short: true
+              },
+              {
                 title: "Event",
                 value: data.event,
                 short: true
               },
               {
-                title: "Created At",
-                value: moment(data.timestamp).format(
-                  "dddd, MMM Do YYYY, h:mm a"
-                ),
-                short: true
-              },
-              {
-                title: "Date",
-                value: moment(data.date).format("dddd, MMM Do YYYY, h:mm a"),
+                title: "Event Date",
+                value: timeConversion({ dateObj: eventDate }),
                 short: true
               },
               {

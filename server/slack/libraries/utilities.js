@@ -120,4 +120,4 @@ const listBuilder = ({ info }) => {
   return msg;
 };
 
-module.exports = { parseTags, listBuilder };
+module.exports = { parseTags, listBuilder, timeConversion };

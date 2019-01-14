@@ -30,4 +30,18 @@ const userQuery = ({ userId }) => {
   });
 };
 
-module.exports = { roomOpener, userQuery };
+const timeConversion = ({ dateObj }) =>
+  dateObj.toLocaleString("en-GB", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZoneName: "short",
+    hour: "numeric",
+    minute: "numeric",
+    time: "numeric",
+    timeZone: "America/Vancouver",
+    hour12: false
+  });
+
+module.exports = { roomOpener, userQuery, timeConversion };
