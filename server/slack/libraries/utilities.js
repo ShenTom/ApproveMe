@@ -18,6 +18,22 @@ const parseTags = ({ tagged, requester }) => {
   return result;
 };
 
+const isDayLightSaving = ({ dateObj }) => {
+  // for utc dateObj only!!
+  const month = dateObj.month() + 1; //0-11
+  const date = dateObj.date();
+
+  if (month > 3 && month < 11) {
+    return true;
+  } else if (month === 3 && date > 9) {
+    return true;
+  } else if (month === 11 && date < 3) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const timeConversion = ({ dateObj }) =>
   dateObj.toLocaleString("en-GB", {
     weekday: "short",
@@ -120,4 +136,4 @@ const listBuilder = ({ info }) => {
   return msg;
 };
 
-module.exports = { parseTags, listBuilder, timeConversion };
+module.exports = { parseTags, listBuilder, timeConversion, isDayLightSaving };
