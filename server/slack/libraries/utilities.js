@@ -1,6 +1,11 @@
 const moment = require("moment");
 
-const boardMember = ["U79456HA5", "UC77Z97SL"];
+const boardMember = [
+  process.env.JILL,
+  process.env.GINNY,
+  process.env.KAI,
+  process.env.JUDY
+];
 
 const parseTags = ({ tagged, requester }) => {
   const result = [tagged];
