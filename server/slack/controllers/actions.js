@@ -20,7 +20,10 @@ router.post("/", urlencodedParser, (req, res) => {
       : process.env.PROD_ATOKEN;
 
   if (payload.token !== a_token) {
-    return res.sendStatus(500);
+    return res.send({
+      ok: false,
+      error: "invalid_auth"
+    });
   }
 
   if (payload.callback_id === "requestDialog") {
@@ -29,10 +32,10 @@ router.post("/", urlencodedParser, (req, res) => {
     if (!moment(payload.submission.date).isValid()) {
       console.log("The date format is incorrect.");
 
-      return res.status(401).send({
+      return res.send({
         errors: [
           {
-            name: "name",
+            name: "date",
             error: "The date format is incorrect."
           }
         ]
@@ -110,6 +113,8 @@ router.post("/", urlencodedParser, (req, res) => {
     /* HIDE NUDGE FEATURE
 
   } else if (payload.callback_id == "requester") {
+    res.status(200).end();
+
     console.log("Requester Payload: ", payload);
 
     let url = process.env.API_URL + payload.actions[0].value;
@@ -179,6 +184,8 @@ router.post("/", urlencodedParser, (req, res) => {
     });
   */
   } else if (payload.callback_id === "approve/decline") {
+    res.status(200).end();
+
     console.log("Approve/decline Payload: ", payload);
 
     let url =
