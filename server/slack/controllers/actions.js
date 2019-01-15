@@ -5,7 +5,7 @@ const request = require("request");
 const bodyParser = require("body-parser");
 const slack = require("slack");
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const { parseTags } = require("../libraries/utilities");
+const { parseTags, isDayLightSaving } = require("../libraries/utilities");
 
 router.get("/", function(req, res) {
   res.send("actions");
@@ -70,16 +70,18 @@ router.post("/", urlencodedParser, (req, res) => {
 
     var urgency = parseInt(payload.submission.urgency);
 
-    console.log("Urgency (int): ", urgency);
+    let offset = 8;
+
+    if (isDayLightSaving({ dateObj: moment.utc(payload.submission.date) })) {
+      offset -= 1;
+    }
 
     var newData = {
       requester: payload.user.id,
       event: payload.submission.name,
       channel: payload.channel.id,
       tagged: obj,
-      date: moment(payload.submission.date)
-        .utc()
-        .valueOf(),
+      date: moment.utc(payload.submission.date).valueOf() + 3600000 * offset,
       description: payload.submission.description,
       urgency: urgency
     };
